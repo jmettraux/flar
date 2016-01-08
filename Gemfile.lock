@@ -7,7 +7,7 @@ PATH
       sequel (>= 4.29.0)
 
 PATH
-  remote: ../../raabro/
+  remote: ../raabro/
   specs:
     raabro (1.1.0)
 
