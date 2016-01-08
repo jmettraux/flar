@@ -34,6 +34,7 @@ module Flor
   VERSION = '0.2.0'
 end
 
+require 'flor/helpers'
 require 'flor/parsers'
 
 require 'flor/instruction'

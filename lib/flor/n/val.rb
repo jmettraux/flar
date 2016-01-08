@@ -30,11 +30,10 @@ class Flor::Ins::Val < Flor::Instruction
 
   def execute
 
-    pl = @message['payload']
-    pl['ret'] = attributes['_0']
+    payload['ret'] = attributes['_0']
 
     [
-      { 'point' => 'receive', 'payload' => pl }
+      { 'point' => 'receive', 'payload' => payload, 'nid' => nid }
     ]
   end
 end

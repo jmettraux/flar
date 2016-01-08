@@ -58,13 +58,9 @@ module Flor
       break if point == 'failed'
       break if point == 'terminated'
 
-      #msgs = self.send(point.to_sym, execution, message)
-
-      tree = determine_tree(execution, message)
-      kinst = Flor::Instruction.lookup(tree.first)
-      inst = kinst.new(execution, message)
-
-      msgs = inst.send(point.to_sym)
+      #tree = determine_tree(execution, message)
+      #msgs = inst.send(point.to_sym)
+      msgs = self.send(point.to_sym, execution, message)
 
       messages.concat(msgs)
     end
@@ -72,11 +68,41 @@ module Flor
     message
   end
 
-  def self.determine_tree(execution, msg)
+  def self.execute(execution, message)
 
-    # TODO rewrite tree if point == 'execute'
+    nid = message['nid']
+    tree = message['tree']
 
-    msg['tree']
+    # TODO rewrite tree
+
+    kinst = Flor::Instruction.lookup(tree.first)
+    inst = kinst.new(execution, message)
+
+    now = Flor.tstamp
+
+    execution['nodes'][nid] = {
+      'nid' => nid,
+      'tree' => tree,
+      'ctime' => now,
+      'mtime' => now }
+
+    inst.execute
+  end
+
+  def self.receive(execution, message)
+
+    nid = message['nid']
+
+    return [
+      message.merge('point' => 'terminated')
+    ] if nid == nil
+
+    tree = execution['nodes'][nid]['tree']
+
+    kinst = Flor::Instruction.lookup(tree.first)
+    inst = kinst.new(execution, message)
+
+    inst.receive
   end
 
   def self.generate_exid(domain)

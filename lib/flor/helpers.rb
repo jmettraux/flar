@@ -24,46 +24,16 @@
 #++
 
 
-class Flor::Instruction
+module Flor
 
-  def initialize(execution, message)
+  def self.dup(o)
 
-    @execution = execution
-    @message = message
+    Marshal.load(Marshal.dump(o))
   end
 
-  def nid; @message['nid']; end
-  def node; @execution['nodes'][nid]; end
-  def tree; node['tree']; end
-  def attributes; tree[1]; end
-  def payload; @message['payload']; end
-  def parent; node['parent']; end
+  def self.tstamp(t=Time.now.utc)
 
-  def receive
-
-    [
-      { 'point' => 'receive', 'payload' => payload, 'nid' => parent }
-    ]
+    t.strftime('%Y%m%d.%H%M%S.') + sprintf('%06d', t.usec)
   end
 end
-
-# class methods
-#
-class Flor::Instruction
-
-  @@instructions = {}
-
-  def self.names(*names)
-
-    names.each { |n| @@instructions[n] = self }
-  end
-  class << self; alias :name :names; end
-
-  def self.lookup(name)
-
-    @@instructions[name]
-  end
-end
-
-module Flor::Ins; end
 
