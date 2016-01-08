@@ -1,0 +1,6 @@
+
+.ruby-version
+.rspec
+
+tmp/*.db
+
