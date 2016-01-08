@@ -2,7 +2,7 @@
 #
 # specifying flor
 #
-# Sat Jan  9 07:20:32 JST 2016
+# Thu Jan  7 06:22:04 JST 2016
 #
 
 require 'spec_helper'
@@ -10,19 +10,28 @@ require 'spec_helper'
 
 describe 'Flor instructions' do
 
-  describe 'sequence' do
+  describe 'push' do
 
-    it 'returns immediately if empty'
-    it 'chains instructions'
-    it 'returns the value of last child as $(ret)'
+    it 'pushes to a field' do
+
+      rad = %{
+        push l 1
+      }
+
+      r = Flor.eval(rad, {}, {})
+
+      expect(r).to eq(:x)
+    end
+
+    it 'pushes $(ret) when no attributes'
+    it 'fails if the target is not an array'
 
 #    it 'returns values on their own' do
 #
-#      rad = %{
+#      cmp = %{
 #        2
 #      }
 #
-#      r = Flor.eval(rad, {}, {})
 #
 #      expect(r['point']).to eq('terminated')
 #      #expect(r['exid']).to eq(exid)

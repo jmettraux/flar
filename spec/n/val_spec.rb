@@ -14,14 +14,11 @@ describe 'Flor instructions' do
 
     it 'returns values on their own' do
 
-      #@flor.storage.connection.loggers << Logger.new($stdout)
-      #@flor.on(nil, nil, nil) { |msg| puts "*** msg *** #{msg.inspect}" }
-
-      cmp = %{
+      rad = %{
         2
       }
 
-      r = Flor.eval(cmp, {}, {})
+      r = Flor.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)
