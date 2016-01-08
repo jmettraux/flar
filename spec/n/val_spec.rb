@@ -23,13 +23,11 @@ describe 'Flor instructions' do
 
       r = Flor.eval(cmp, {}, {})
 
-      expect(r).to eq(:x)
-
-      #expect(r['point']).to eq('terminated')
+      expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)
-      #expect(r['from']).to eq(nil)
+      expect(r['from']).to eq(nil)
       #expect(r['n']).to eq(3)
-      #expect(r['payload']).to eq({ 'ret' => 2 })
+      expect(r['payload']).to eq({ 'ret' => 2 })
     end
   end
 end
