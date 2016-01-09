@@ -10,6 +10,11 @@ require 'spec_helper'
 
 describe 'Flor instructions' do
 
+  before :each do
+
+    @interpreter = Flor::TransientInterpreter.new
+  end
+
   describe 'sequence' do
 
     it 'returns immediately if empty' do
@@ -18,7 +23,7 @@ describe 'Flor instructions' do
         sequence
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({})
@@ -32,7 +37,7 @@ describe 'Flor instructions' do
           push l 1
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
@@ -46,7 +51,7 @@ describe 'Flor instructions' do
           2
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 2 })

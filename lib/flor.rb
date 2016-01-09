@@ -31,7 +31,7 @@ require 'munemo'
 
 module Flor
 
-  VERSION = '0.2.0'
+  VERSION = '0.3.0'
 end
 
 require 'flor/helpers'
@@ -43,5 +43,5 @@ Dir[File.join(File.dirname(__FILE__), 'flor/n/*.rb')].each do |path|
   require path
 end
 
-require 'flor/eval'
+require 'flor/interpreter'
 

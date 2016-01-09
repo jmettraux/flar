@@ -10,6 +10,11 @@ require 'spec_helper'
 
 describe 'Flor instructions' do
 
+  before :each do
+
+    @interpreter = Flor::TransientInterpreter.new
+  end
+
   describe '+' do
 
     it 'returns 0 if empty' do
@@ -18,7 +23,7 @@ describe 'Flor instructions' do
         +
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 0 })
@@ -32,7 +37,7 @@ describe 'Flor instructions' do
           2
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 3 })
@@ -47,7 +52,7 @@ describe 'Flor instructions' do
           -1
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 4 })
@@ -62,7 +67,7 @@ describe 'Flor instructions' do
         *
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 0 })
@@ -77,7 +82,7 @@ describe 'Flor instructions' do
           -1
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => -6 })

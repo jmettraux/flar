@@ -10,6 +10,11 @@ require 'spec_helper'
 
 describe 'Flor instructions' do
 
+  before :each do
+
+    @interpreter = Flor::TransientInterpreter.new
+  end
+
   describe 'val' do
 
     it 'returns values on their own' do
@@ -18,7 +23,7 @@ describe 'Flor instructions' do
         2
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)

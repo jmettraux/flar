@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flor (0.2.0)
+    flor (0.3.0)
       munemo
       raabro (>= 1.0.5)
       sequel (>= 4.29.0)

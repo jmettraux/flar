@@ -10,6 +10,11 @@ require 'spec_helper'
 
 describe 'Flor instructions' do
 
+  before :each do
+
+    @interpreter = Flor::TransientInterpreter.new
+  end
+
   describe 'push' do
 
     it 'pushes to a field' do
@@ -18,7 +23,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = Flor.eval(rad, { 'l' => [ 0 ] }, {})
+      r = @interpreter.eval(rad, { 'l' => [ 0 ] }, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
@@ -30,7 +35,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = Flor.eval(rad, {}, {})
+      r = @interpreter.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 1 ] })
@@ -42,7 +47,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = Flor.eval(rad, { 'l' => 0 }, {})
+      r = @interpreter.eval(rad, { 'l' => 0 }, {})
 
       expect(r['point']).to eq('failed')
       expect(r['error']['text']).to eq('target value is not an array')
