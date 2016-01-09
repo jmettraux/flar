@@ -32,9 +32,7 @@ class Flor::Ins::Val < Flor::Instruction
 
     payload['ret'] = attributes['_0']
 
-    [
-      { 'point' => 'receive', 'payload' => payload, 'nid' => nid }
-    ]
+    reply
   end
 end
 

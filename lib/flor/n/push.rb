@@ -35,13 +35,11 @@ class Flor::Ins::Push < Flor::Instruction
     field = attributes['_0']
     array = (payload[field] ||= [])
 
-    return error("target value is not an array") unless array.is_a?(Array)
+    return error_reply("target value is not an array") unless array.is_a?(Array)
 
     attributes.each { |k, v| array.push(v) unless k == '_0' }
 
-    [
-      { 'point' => 'receive', 'payload' => payload, 'nid' => nid }
-    ]
+    reply
   end
 end
 

@@ -41,6 +41,7 @@ class Flor::Instruction
 
   protected
 
+  def exid; @message['exid']; end
   def nid; @message['nid']; end
   def node; @execution['nodes'][nid]; end
   def tree; node['tree']; end
@@ -48,11 +49,24 @@ class Flor::Instruction
   def payload; @message['payload']; end
   def parent; node['parent']; end
 
-  def error(text)
+  def reply(h={})
 
-    [
-      { 'point' => 'failed', 'error' => { 'text' => text } }
-    ]
+    m = {}
+    m['point'] = 'receive'
+    m['exid'] = exid
+    m['nid'] = parent
+    m['from'] = nid
+    m['payload'] = payload
+    m.merge!(h)
+
+    [ m ]
+  end
+
+  def error_reply(text)
+
+    # TODO log into execution
+
+    reply('point' => 'failed', 'error' => { 'text' => text })
   end
 end
 

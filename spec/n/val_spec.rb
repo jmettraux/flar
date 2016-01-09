@@ -22,8 +22,7 @@ describe 'Flor instructions' do
 
       expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)
-      expect(r['from']).to eq(nil)
-      #expect(r['n']).to eq(3)
+      expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'ret' => 2 })
     end
   end
