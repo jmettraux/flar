@@ -32,19 +32,21 @@ class Flor::Instruction
     @message = message
   end
 
-  def nid; @message['nid']; end
-  def node; @execution['nodes'][nid]; end
-  def tree; node['tree']; end
-  def attributes; tree[1]; end
-  def payload; @message['payload']; end
-  def parent; node['parent']; end
-
   def receive
 
     [
       { 'point' => 'receive', 'payload' => payload, 'nid' => parent }
     ]
   end
+
+  protected
+
+  def nid; @message['nid']; end
+  def node; @execution['nodes'][nid]; end
+  def tree; node['tree']; end
+  def attributes; tree[1]; end
+  def payload; @message['payload']; end
+  def parent; node['parent']; end
 
   def error(text)
 
