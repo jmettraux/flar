@@ -26,7 +26,7 @@
 
 class Flor::Ins::Arith < Flor::Instruction
 
-  name '+'
+  names '+', '*'
 
   def execute
 
@@ -42,7 +42,7 @@ class Flor::Ins::Arith < Flor::Instruction
     m = ms.size == 1 && ms.first
     #
     if m['point'] == 'receive' && m['nid'] == parent
-      payload['ret'] = node['rets'].reduce(&:+) || 0
+      payload['ret'] = node['rets'].reduce(&tree.first.to_sym) || 0
     end
 
     ms

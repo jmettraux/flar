@@ -12,7 +12,7 @@ describe 'Flor instructions' do
 
   describe '+' do
 
-    it 'returns immediately if empty' do
+    it 'returns 0 if empty' do
 
       rad = %{
         +
@@ -51,6 +51,36 @@ describe 'Flor instructions' do
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 4 })
+    end
+  end
+
+  describe '*' do
+
+    it 'returns 0 if empty' do
+
+      rad = %{
+        *
+      }
+
+      r = Flor.eval(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'ret' => 0 })
+    end
+
+    it 'multiplies three numbers' do
+
+      rad = %{
+        *
+          3
+          2
+          -1
+      }
+
+      r = Flor.eval(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'ret' => -6 })
     end
   end
 end
