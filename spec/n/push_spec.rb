@@ -20,25 +20,12 @@ describe 'Flor instructions' do
 
       r = Flor.eval(rad, {}, {})
 
-      expect(r).to eq(:x)
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'l' => [ 1 ] })
     end
 
-    it 'pushes $(ret) when no attributes'
     it 'fails if the target is not an array'
-
-#    it 'returns values on their own' do
-#
-#      cmp = %{
-#        2
-#      }
-#
-#
-#      expect(r['point']).to eq('terminated')
-#      #expect(r['exid']).to eq(exid)
-#      expect(r['from']).to eq(nil)
-#      #expect(r['n']).to eq(3)
-#      expect(r['payload']).to eq({ 'ret' => 2 })
-#    end
+    it 'pushes $(ret) when no attributes'
   end
 end
 
