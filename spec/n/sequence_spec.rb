@@ -12,9 +12,33 @@ describe 'Flor instructions' do
 
   describe 'sequence' do
 
-    it 'returns immediately if empty'
+    it 'returns immediately if empty' do
+
+      rad = %{
+        sequence
+      }
+
+      r = Flor.eval(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({})
+    end
 
     it 'chains instructions' do
+
+      rad = %{
+        sequence
+          push l 0
+          push l 1
+      }
+
+      r = Flor.eval(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
+    end
+
+    it 'returns the value of last child as $(ret)' do
 
       rad = %{
         sequence
@@ -27,23 +51,6 @@ describe 'Flor instructions' do
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 2 })
     end
-
-    it 'returns the value of last child as $(ret)'
-
-#    it 'returns values on their own' do
-#
-#      rad = %{
-#        2
-#      }
-#
-#      r = Flor.eval(rad, {}, {})
-#
-#      expect(r['point']).to eq('terminated')
-#      #expect(r['exid']).to eq(exid)
-#      expect(r['from']).to eq(nil)
-#      #expect(r['n']).to eq(3)
-#      expect(r['payload']).to eq({ 'ret' => 2 })
-#    end
   end
 end
 
