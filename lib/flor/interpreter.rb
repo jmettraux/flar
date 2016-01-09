@@ -41,23 +41,33 @@ module Flor
     def execute(message)
 
       nid = message['nid']
-      tree = message['tree']
-
-      # TODO rewrite tree
-
-      kinst = Flor::Instruction.lookup(tree.first)
-      inst = kinst.new(@execution, message)
 
       now = Flor.tstamp
 
-      @execution['nodes'][nid] = {
+      node = {
         'nid' => nid,
-        'tree' => tree,
         'parent' => message['from'],
         'ctime' => now,
         'mtime' => now }
+      @execution['nodes'][nid] = node
+
+      tree = rewrite_tree(node, message)
+      node['tree'] = tree if tree
+
+      kinst = Flor::Instruction.lookup(node['inst'])
+      inst = kinst.new(@execution, message)
 
       inst.execute
+    end
+
+    def rewrite_tree(node, message)
+
+      tree = message['tree']
+
+      node['inst'] = tree.first
+      node['tree'] = tree if node['nid'] == '0'
+
+      nil
     end
 
     def receive(message)
@@ -68,9 +78,9 @@ module Flor
         message.merge('point' => 'terminated')
       ] if nid == nil
 
-      tree = @execution['nodes'][nid]['tree']
+      node = @execution['nodes'][nid]
 
-      kinst = Flor::Instruction.lookup(tree.first)
+      kinst = Flor::Instruction.lookup(node['inst'])
       inst = kinst.new(@execution, message)
 
       inst.receive

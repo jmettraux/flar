@@ -45,10 +45,27 @@ class Flor::Instruction
   def nid; @message['nid']; end
   def from; @message['from']; end
   def node; @execution['nodes'][nid]; end
-  def tree; node['tree']; end
   def attributes; tree[1]; end
   def payload; @message['payload']; end
   def parent; node['parent']; end
+
+  def tree; lookup_tree(nid); end
+
+  def lookup_tree(nid)
+
+    node = @execution['nodes'][nid]
+
+    tree = node['tree']
+    return tree if tree
+
+    tree = lookup_tree(node['parent'])
+
+    id = nid.split('_').last
+    id = id.split('-').last
+    id = id.to_i
+
+    tree.last[id]
+  end
 
   def reply(h={})
 
