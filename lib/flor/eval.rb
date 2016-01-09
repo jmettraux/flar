@@ -51,9 +51,10 @@ module Flor
     loop do
 
       message = messages.pop
-p message
 
       break unless message
+
+      log(message)
 
       point = message['point']
 
@@ -134,6 +135,18 @@ p message
     t = t.strftime('%Y%m%d.%H%M')
 
     "#{domain}-#{uid}-#{t}.#{sus}"
+  end
+
+  def self.log(m)
+
+    return
+
+    pt = m['point'][0, 3]
+    ni = m['nid'] ? " #{m['nid']}" : ''
+    fr = m['from'] ? " from #{m['from']}" : ''
+    t = m['tree'] ? ' ' + m['tree'][0..-2].inspect : ''
+
+    puts "#{pt}#{ni}#{t}#{fr}"
   end
 end
 
