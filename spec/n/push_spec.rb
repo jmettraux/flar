@@ -36,7 +36,18 @@ describe 'Flor instructions' do
       expect(r['payload']).to eq({ 'l' => [ 1 ] })
     end
 
-    it 'fails if the target is not an array'
+    it 'fails if the target is not an array' do
+
+      rad = %{
+        push l 1
+      }
+
+      r = Flor.eval(rad, { 'l' => 0 }, {})
+
+      expect(r['point']).to eq('failed')
+      expect(r['error']['text']).to eq('target value is not an array')
+    end
+
     it 'pushes $(ret) when no attributes'
   end
 end

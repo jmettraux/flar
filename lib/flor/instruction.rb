@@ -45,6 +45,13 @@ class Flor::Instruction
       { 'point' => 'receive', 'payload' => payload, 'nid' => parent }
     ]
   end
+
+  def error(text)
+
+    [
+      { 'point' => 'failed', 'error' => { 'text' => text } }
+    ]
+  end
 end
 
 # class methods
