@@ -24,18 +24,28 @@
 #++
 
 
-class Flor::Ins::Sequence < Flor::Instruction
+class Flor::Ins::Arith < Flor::Instruction
 
-  name 'sequence'
+  name '+'
 
   def execute
+
+    node['rets'] = []
 
     receive
   end
 
   def receive
 
-    sequence_receive
+    ms = sequence_receive
+
+    m = ms.size == 1 && ms.first
+    #
+    if m['point'] == 'receive' && m['nid'] == parent
+      payload['ret'] = node['rets'].reduce(&:+) || 0
+    end
+
+    ms
   end
 end
 

@@ -74,6 +74,22 @@ class Flor::Instruction
 
     nid.split('_').last.to_i + 1
   end
+
+  def sequence_receive
+
+    i = @message['point'] == 'execute' ? 0 : next_id(from)
+    t = tree.last[i]
+
+    if i > 0 && rets = node['rets']
+      rets << Flor.dup(payload['ret'])
+    end
+
+    if t == nil
+      reply
+    else
+      reply('point' => 'execute', 'nid' => "#{nid}_#{i}", 'tree' => t)
+    end
+  end
 end
 
 # class methods
