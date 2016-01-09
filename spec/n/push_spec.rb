@@ -18,6 +18,18 @@ describe 'Flor instructions' do
         push l 1
       }
 
+      r = Flor.eval(rad, { 'l' => [ 0 ] }, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
+    end
+
+    it 'creates a new array if necessary' do
+
+      rad = %{
+        push l 1
+      }
+
       r = Flor.eval(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
