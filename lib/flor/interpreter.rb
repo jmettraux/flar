@@ -51,8 +51,7 @@ module Flor
         'mtime' => now }
       @execution['nodes'][nid] = node
 
-      tree = rewrite_tree(node, message)
-      node['tree'] = tree if tree
+      rewrite_tree(node, message)
 
       kinst = Flor::Instruction.lookup(node['inst'])
       inst = kinst.new(@execution, message)
@@ -67,7 +66,7 @@ module Flor
       node['inst'] = tree.first
       node['tree'] = tree if node['nid'] == '0'
 
-      nil
+      # TODO
     end
 
     def receive(message)
