@@ -40,6 +40,7 @@ module Flor
 
     messages <<
       { 'point' => 'execute',
+        'exid' => exid,
         'nid' => '0',
         'tree' => tree,
         'payload' => fields,
@@ -50,6 +51,7 @@ module Flor
     loop do
 
       message = messages.pop
+p message
 
       break unless message
 
@@ -83,6 +85,7 @@ module Flor
     execution['nodes'][nid] = {
       'nid' => nid,
       'tree' => tree,
+      'parent' => message['from'],
       'ctime' => now,
       'mtime' => now }
 

@@ -24,75 +24,25 @@
 #++
 
 
-class Flor::Instruction
+class Flor::Ins::Sequence < Flor::Instruction
 
-  def initialize(execution, message)
+  name 'sequence'
 
-    @execution = execution
-    @message = message
+  def execute
+
+    receive
   end
 
   def receive
 
-    [
-      { 'point' => 'receive', 'payload' => payload, 'nid' => parent }
-    ]
-  end
+    i = @message['point'] == 'execute' ? 0 : next_id(from)
+    t = tree.last[i]
 
-  protected
-
-  def exid; @message['exid']; end
-  def nid; @message['nid']; end
-  def from; @message['from']; end
-  def node; @execution['nodes'][nid]; end
-  def tree; node['tree']; end
-  def attributes; tree[1]; end
-  def payload; @message['payload']; end
-  def parent; node['parent']; end
-
-  def reply(h={})
-
-    m = {}
-    m['point'] = 'receive'
-    m['exid'] = exid
-    m['nid'] = parent
-    m['from'] = nid
-    m['payload'] = payload
-    m.merge!(h)
-
-    [ m ]
-  end
-
-  def error_reply(text)
-
-    # TODO log into execution
-
-    reply('point' => 'failed', 'error' => { 'text' => text })
-  end
-
-  def next_id(nid)
-
-    nid.split('_').last.to_i + 1
+    if t == nil
+      reply
+    else
+      reply('point' => 'execute', 'nid' => "#{nid}_#{i}", 'tree' => t)
+    end
   end
 end
-
-# class methods
-#
-class Flor::Instruction
-
-  @@instructions = {}
-
-  def self.names(*names)
-
-    names.each { |n| @@instructions[n] = self }
-  end
-  class << self; alias :name :names; end
-
-  def self.lookup(name)
-
-    @@instructions[name]
-  end
-end
-
-module Flor::Ins; end
 
