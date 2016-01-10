@@ -54,6 +54,12 @@ module Flor
       rewrite_tree(node, message)
 
       kinst = Flor::Instruction.lookup(node['inst'])
+
+      return [
+        { 'point' => 'failed',
+          'error' => { 'text' => "no instruction named '#{node['inst']}'" } }
+      ] if kinst == nil
+
       inst = kinst.new(@execution, message)
 
       inst.execute
