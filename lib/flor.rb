@@ -34,6 +34,7 @@ module Flor
   VERSION = '0.3.0'
 end
 
+require 'flor/dollar'
 require 'flor/helpers'
 require 'flor/parsers'
 
