@@ -103,8 +103,15 @@ module Flor
 
     def call(fun, s)
 
+p [ fun, s ]
       case fun
+        when 'u' then s.upcase
+        when 'd' then s.downcase
         when 'r' then s.reverse
+        when 'c' then s.capitalize.gsub(/\s[a-z]/) { |c| c.upcase }
+        when /\A-?\d+\z/ then s[fun.to_i]
+        when /\A(-?\d+), *(-?\d+)\z/ then s[$1.to_i, $2.to_i]
+        when /\A(-?\d+)\.\.(-?\d+)\z/ then s[$1.to_i..$2.to_i]
         else s
       end
     end
@@ -130,7 +137,7 @@ module Flor
 
         result =
           if mode == :lookup
-            lookup(k)
+            k[0, 1] == "'" ? k[1..-1] : lookup(k)
           else # :call
             call(k, result)
           end

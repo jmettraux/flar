@@ -140,6 +140,75 @@ describe Flor::Dollar do
 
         expect(@d.expand('$(brown|r)')).to eq('xof')
       end
+
+      it "understands |u (uppercase)" do
+
+        expect(@d.expand("$(brown|u)")).to eq("FOX")
+      end
+
+      it "understands |u|r" do
+
+        expect(@d.expand("$(brown|u|r)")).to eq("XOF")
+      end
+
+      it "understands |d (downcase)" do
+
+        expect(@d.expand("$(black|d)")).to eq("pug")
+      end
+
+      it "understands |1..-1" do
+
+        expect(@d.expand("$(quick|1..-1)")).to eq("ump")
+      end
+
+      it "understands |1,2" do
+
+        expect(@d.expand("$(quick|1,2)")).to eq("um")
+      end
+
+      it "understands |2" do
+
+        expect(@d.expand("$(quick|2)")).to eq("m")
+      end
+
+      it "understands |-3" do
+
+        expect(@d.expand("$(quick|-3)")).to eq("u")
+      end
+
+      it "understands ||'text" do
+
+        expect(@d.expand("$(nada||'text|u)")).to eq("TEXT")
+      end
+
+      it "understands |c (capitalize)" do
+
+        expect(@d.expand("$(ba|c)")).to eq("Black Adder")
+        expect(@d.expand("$(bs|c)")).to eq("Black Sheep")
+      end
+
+      it "understands |q ([double] quote)" do
+
+        expect(@d.expand("the $(ba|c|q)")).to eq("the \"Black Adder\"")
+        expect(@d.expand("the $(bs|c|q)")).to eq("the \"Black Sheep\"")
+      end
+
+      it "doesn't double quote when |q" do
+
+        expect(@d.expand("$(msg|q)")).to eq("\"hello world\"")
+      end
+
+      it "double quotes when |Q" do
+
+        expect(@d.expand("$(msg|Q)")).to eq("\"\\\"hello world\\\"\"")
+      end
+
+      it "escapes when |q" do
+
+        expect(@d.expand("$(msg1|q)")).to eq("\"hello \\\"le monde\\\"\"")
+      end
+
+      it "understands |s/xx/yy/ (substitution filter)"
     end
   end
 end
