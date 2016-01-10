@@ -101,14 +101,22 @@ module Flor
     #  # ...
     #end
 
+    def quote(s, force)
+
+      return s if force == false && s[0, 1] == '"' && s[-1, 1] == '"'
+
+      JSON.dump([ s ])[1..-2]
+    end
+
     def call(fun, s)
 
-p [ fun, s ]
       case fun
         when 'u' then s.upcase
         when 'd' then s.downcase
         when 'r' then s.reverse
         when 'c' then s.capitalize.gsub(/\s[a-z]/) { |c| c.upcase }
+        when 'q' then quote(s, false)
+        when 'Q' then quote(s, true)
         when /\A-?\d+\z/ then s[fun.to_i]
         when /\A(-?\d+), *(-?\d+)\z/ then s[$1.to_i, $2.to_i]
         when /\A(-?\d+)\.\.(-?\d+)\z/ then s[$1.to_i..$2.to_i]
