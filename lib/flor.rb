@@ -43,5 +43,5 @@ Dir[File.join(File.dirname(__FILE__), 'flor/n/*.rb')].each do |path|
   require path
 end
 
-require 'flor/interpreter'
+require 'flor/executor'
 

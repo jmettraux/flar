@@ -12,7 +12,7 @@ describe 'Flor instructions' do
 
   before :each do
 
-    @interpreter = Flor::TransientInterpreter.new
+    @executor = Flor::TransientExecutor.new
   end
 
   describe 'val' do
@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         2
       }
 
-      r = @interpreter.eval(rad, {}, {})
+      r = @executor.launch(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)

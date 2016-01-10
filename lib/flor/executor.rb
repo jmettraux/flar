@@ -26,7 +26,7 @@
 
 module Flor
 
-  class Interpreter
+  class Executor
 
     attr_reader :execution
     attr_reader :options
@@ -126,7 +126,7 @@ module Flor
     end
   end
 
-  class TransientInterpreter < Interpreter
+  class TransientExecutor < Executor
 
     def initialize(opts={})
 
@@ -138,7 +138,7 @@ module Flor
         'errors' => [] }
     end
 
-    def eval(tree, fields, variables)
+    def launch(tree, fields, variables)
 
       tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
 

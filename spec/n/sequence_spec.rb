@@ -12,7 +12,7 @@ describe 'Flor instructions' do
 
   before :each do
 
-    @interpreter = Flor::TransientInterpreter.new
+    @executor = Flor::TransientExecutor.new
   end
 
   describe 'sequence' do
@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         sequence
       }
 
-      r = @interpreter.eval(rad, {}, {})
+      r = @executor.launch(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({})
@@ -37,7 +37,7 @@ describe 'Flor instructions' do
           push l 1
       }
 
-      r = @interpreter.eval(rad, {}, {})
+      r = @executor.launch(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
@@ -51,7 +51,7 @@ describe 'Flor instructions' do
           2
       }
 
-      r = @interpreter.eval(rad, {}, {})
+      r = @executor.launch(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 2 })
