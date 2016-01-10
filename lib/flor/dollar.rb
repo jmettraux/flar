@@ -86,25 +86,57 @@ module Flor
       end
     end
 
-#// pipe parser
-#
-#static fabr_tree *_nopi(fabr_input *i) { return fabr_rex("s", i, "[^|]+"); }
-#static fabr_tree *_pi(fabr_input *i) { return fabr_rex("p", i, "\\|\\|?"); }
-#
-#static fabr_tree *_pipe_parser(fabr_input *i)
-#{
-#  return fabr_jseq(NULL, i, _nopi, _pi);
-#}
+    module PipeParser include Raabro
+
+      def elt(i); rex(:elt, i, /[^|]+/); end
+      def pipe(i); rex(:pipe, i, /\|\|?/); end
+      def elts(i); jseq(:elts, i, :elt, :pipe); end
+
+      def rewrite_elt(t); t.string; end
+      def rewrite_pipe(t); t.string == '|' ? :pipe : :dpipe; end
+      def rewrite_elts(t); t.children.collect { |e| rewrite(e) }; end
+    end
 
     #def lookup(s)
     #  # ...
     #end
 
+    def call(fun, s)
+
+      case fun
+        when 'r' then s.reverse
+        else s
+      end
+    end
+
     def do_eval(t)
 
       return t if t.is_a?(String)
       return t.collect { |c| do_eval(c) }.join if t[0] != :dol
-      lookup(do_eval(t[1]))
+
+      k = do_eval(t[1])
+      ks = PipeParser.parse(k)
+
+      #lookup(k)
+
+      result = nil
+      mode = :lookup # vs :call
+
+      ks.each do |k|
+
+        if k == :pipe then mode = :call; next; end
+        if k == :dpipe && result then break; end
+        if k == :dpipe then mode = :lookup; next; end
+
+        result =
+          if mode == :lookup
+            lookup(k)
+          else # :call
+            call(k, result)
+          end
+      end
+
+      result
     end
 
     def expand(s)

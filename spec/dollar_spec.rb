@@ -128,6 +128,19 @@ describe Flor::Dollar do
     #}
     it "accepts an escaped $"
     # ...
+
+    context 'pipes' do
+
+      it 'understands || (or)' do
+
+        expect(@d.expand('$(blue||brown)')).to eq('fox')
+      end
+
+      it 'understands |r (reverse)' do
+
+        expect(@d.expand('$(brown|r)')).to eq('xof')
+      end
+    end
   end
 end
 
