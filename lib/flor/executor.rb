@@ -67,12 +67,13 @@ module Flor
 
     def rewrite_tree(node, message)
 
-      tree = message['tree']
-
-      node['inst'] = tree.first
-      node['tree'] = tree if node['nid'] == '0'
+      tree0 = message['tree']
+      tree1 = Flor.dup(tree0)
 
       # TODO
+
+      node['inst'] = tree1.first
+      node['tree'] = tree1 if node['nid'] == '0' || tree1 != tree0
     end
 
     def receive(message)
