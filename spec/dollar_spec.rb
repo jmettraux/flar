@@ -111,23 +111,25 @@ describe Flor::Dollar do
       expect(@d.expand('x$xxx')).to eq('x$xxx')
     end
 
-    it "doesn't expand \"$(nada||'$xxx)\""
-    #
-    #  expect(@d.expand("$(nada||'$xxx)")).to eq('$xxx')
-    #end
+    context 'init single quote' do
 
-    it "accepts an escaped )"
-    #{
-    #  expect(fdol_expand("$(nada||'su\\)rf)", d, fdol_dlup) ===f ""
-    #    "su)rf");
-    #}
-    it "accepts an escaped ) (deeper)"
-    #{
-    #  expect(fdol_expand("$(a||'$(nada||'su\\)rf))", d, fdol_dlup) ===f ""
-    #    "su)rf");
-    #}
-    it "accepts an escaped $"
-    # ...
+      it "doesn't expand \"$(nada||'$xxx)\"" do
+
+        expect(@d.expand("$(nada||'$xxx)")).to eq('$xxx')
+      end
+
+      it 'accepts an escaped )' do
+
+        expect(@d.expand("$(nada||'su\\)rf)")).to eq('su)rf')
+      end
+
+      it 'accepts an escaped ) (deeper)' do
+
+        expect(@d.expand("$(a||'$(nada||'su\\)rf))")).to eq('su)rf')
+      end
+
+      it 'accepts an escaped $' # ?
+    end
 
     context 'pipes' do
 

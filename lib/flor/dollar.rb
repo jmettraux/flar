@@ -144,9 +144,16 @@ module Flor
       end
     end
 
+    def unescape(s)
+
+      s.gsub(/\\[\$)]/) { |m| m[1, 1] }
+    end
+
     def do_eval(t)
 
-      return t if t.is_a?(String)
+      #return t if t.is_a?(String)
+      return unescape(t) if t.is_a?(String)
+
       return t.collect { |c| do_eval(c) }.join if t[0] != :dol
 
       k = do_eval(t[1])
@@ -178,7 +185,8 @@ module Flor
 
       return s unless s.index('$')
 
-      #Parser.parse(s, rewrite: false, all: true, prune: false)
+      #p s
+      #p Parser.parse(s, rewrite: false, all: true, prune: false)
       #Parser.parse(s, rewrite: false)
       t = Parser.parse(s)
       do_eval(t)
