@@ -210,6 +210,30 @@ describe Flor::Dollar do
 
       it "understands |s/xx/yy/ (substitution filter)"
     end
+
+    context "filter pipes" do
+
+      it "understands |l>4 (length filter)" do
+
+        expect(@d.expand("$(lazy|l>4||'none)")).to eq("none");
+        expect(@d.expand("$(lazy|l<4||'none)")).to eq("dog");
+
+        expect(@d.expand("$(lazy|l<=3||'none)")).to eq("dog");
+        expect(@d.expand("$(lazy|l>=3||'none)")).to eq("dog");
+
+        expect(@d.expand("$(lazy|l=3||'none)")).to eq("dog");
+        expect(@d.expand("$(lazy|l=4||'none)")).to eq("none");
+        expect(@d.expand("$(lazy|l==3||'none)")).to eq("dog");
+        expect(@d.expand("$(lazy|l==4||'none)")).to eq("none");
+
+        expect(@d.expand("$(lazy|l!=4||'none)")).to eq("dog");
+        expect(@d.expand("$(lazy|l!=3||'none)")).to eq("none");
+        expect(@d.expand("$(lazy|l<>4||'none)")).to eq("dog");
+        expect(@d.expand("$(lazy|l<>3||'none)")).to eq("none");
+      end
+
+      it "understands |m/xx/ (match filter)"
+    end
   end
 end
 
