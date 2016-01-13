@@ -26,6 +26,27 @@
 
 module Flor
 
+  class FlorDollar < Flor::Dollar
+
+    def initialize(execution, node)
+
+      @execution = execution
+      @node = node
+    end
+
+    def lookup(k)
+
+      do_lookup(@node, k)
+    end
+
+    protected
+
+    def do_lookup(node, k)
+
+      node['vars'][k]
+    end
+  end
+
   class Executor
 
     attr_reader :execution
@@ -49,6 +70,8 @@ module Flor
         'parent' => message['from'],
         'ctime' => now,
         'mtime' => now }
+      if vs = message['vars']; node['vars'] = vs; end
+
       @execution['nodes'][nid] = node
 
       rewrite_tree(node, message)
@@ -65,12 +88,30 @@ module Flor
       inst.execute
     end
 
+    def expand(o, dol)
+
+      case o
+        when Array
+          o.collect { |e| expand(e, dol) }
+        when Hash
+          o.inject({}) { |h, (k, v)| h[expand(k, dol)] = expand(v, dol); h }
+        when String
+          dol.expand(o)
+        else
+          o
+      end
+    end
+
     def rewrite_tree(node, message)
 
       tree0 = message['tree']
-      tree1 = Flor.dup(tree0)
 
-      # TODO
+      dol = FlorDollar.new(@execution, node)
+
+      tree1 = [ *expand(tree0[0, 2], dol), *tree0[2..-1] ]
+
+      # TODO continue me
+      # TODO beware always reduplicationg the tree children
 
       node['inst'] = tree1.first
       node['tree'] = tree1 if node['nid'] == '0' || tree1 != tree0

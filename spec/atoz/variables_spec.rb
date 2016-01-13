@@ -20,14 +20,14 @@ describe 'Flor executions' do
     it 'expand the variables' do
 
       rad = %{
-        $(a)
+        push l $(a)
       }
 
       r = @executor.launch(rad, {}, { 'a' => 'A' })
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'ret' => 'A' })
+      expect(r['payload']).to eq({ 'l' => [ 'A' ] })
     end
   end
 end
