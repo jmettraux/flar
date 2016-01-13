@@ -46,4 +46,5 @@ Dir[File.join(File.dirname(__FILE__), 'flor/n/*.rb')].each do |path|
 end
 
 require 'flor/executor'
+require 'flor/x/rewrite'
 

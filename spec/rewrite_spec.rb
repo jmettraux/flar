@@ -65,6 +65,64 @@ describe Flor::Executor do
       expect(node['inst']).to eq('>')
       expect(node['tree']).to eq(nil)
     end
+
+    context "'>'" do
+
+      it 'rewrites  a > b' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            a > b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('>')
+
+        expect(node['tree']).to eq(
+          [ '>', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  > a b' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            > a b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('>')
+
+        expect(node['tree']).to eq(
+          [ '>', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+#      it "rewrites  a b > c d"
+#      {
+#        msg = mrad("a b > c d");
+#        //fdja_putdc(fdja_l(msg, "tree"));
+#
+#        flon_rewrite_tree(node, msg);
+#
+#        expect(fdja_ld(msg, "tree") ===f ""
+#          "[ >, {}, 1, [ "
+#            "[ a, { _0: b }, 1, [] ], "
+#            "[ c, { _0: d }, 1, [] ] "
+#          "], sx ]");
+#
+#        expect(fdja_ls(node, "inst", NULL) ===f ">");
+#        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+#      }
+    end
   end
 end
 

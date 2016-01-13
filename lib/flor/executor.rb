@@ -109,8 +109,8 @@ module Flor
       dol = FlorDollar.new(@execution, node)
 
       tree1 = [ *expand(tree0[0, 2], dol), *tree0[2..-1] ]
+      tree1 = rewrite(node, message, tree1)
 
-      # TODO continue me
       # TODO beware always reduplicationg the tree children
 
       node['inst'] = tree1.first
