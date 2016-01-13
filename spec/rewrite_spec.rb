@@ -20,18 +20,26 @@ class RewriteExecutor < Flor::TransientExecutor
 
     now = Flor.tstamp
 
-    node = {
+    root = {
       'nid' => '0',
       'parent' => nil,
+      'vars' => opts[:vars] || opts['vars'],
       'ctime' => now,
       'mtime' => now }
+    executor.execution['nodes']['0'] = root
 
-    executor.execution['nodes']['0'] = node
+    now = Flor.tstamp
+
+    node = {
+      'nid' => '0_0',
+      'parent' => '0',
+      'ctime' => now,
+      'mtime' => now }
+    executor.execution['nodes']['0_0'] = node
 
     message = {
       'point' => 'execute',
       'tree' => tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree,
-      'vars' => opts[:vars] || opts['vars'],
       'payload' => opts[:payload] || opts['payload'] || {} }
 
     [ executor, node, message ]
