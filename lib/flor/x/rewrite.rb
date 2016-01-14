@@ -42,7 +42,8 @@ class Flor::Executor
     return nil unless tree[0] == op
     return nil if tree[3].length > 0 # there are already children
 
-    cn = tree[1].collect { |k, v| l_to_tree([ v ], tree[2], node, message) }
+    cn = tree[1]
+      .collect { |k, v| l_to_tree([ [ nil, v ] ], tree[2], node, message) }
 
     [ op, {}, tree[2], cn, *tree[4] ]
   end
@@ -52,14 +53,14 @@ class Flor::Executor
     return nil unless tree[1].find { |k, v| v == op && k.match(/\A_\d+\z/) }
 
     cn = []
-    l = [ tree[0] ]
+    l = [ [ nil, tree[0] ] ]
 
     (tree[1].keys + [ nil ]).each do |k|
 
       v = tree[1][k]
 
       if k && ! (v == op &&  k.match(/\A_\d+\z/))
-        l << v; next
+        l << [ k, v ]; next
       end
 
       cn << l_to_tree(l, tree[2], node, message)
@@ -104,49 +105,25 @@ class Flor::Executor
 
   def v_to_tree(val, lnumber, node, message)
 
-    return val if is_tree?(val)
+    val = val[1]
 
-    if val.is_a?(String)
-      [ val, {}, lnumber, [] ]
-    else
-      [ 'val', { '_0' => val }, lnumber, [] ]
-    end
+    return val if is_tree?(val)
+    return [ val, {}, lnumber, [] ] if val.is_a?(String)
+    [ 'val', { '_0' => val }, lnumber, [] ]
   end
 
   def l_to_tree(lst, lnumber, node, message)
 
     return v_to_tree(lst.first, lnumber, node, message) if lst.size == 1
 
-    # TODO
+    as, _ =
+      lst[1..-1].inject([ {}, 0 ]) do |(h, i), (k, v)|
+        if k.match(/\A_\d+\z/) then k = "_#{i}"; i = i + 1; end
+        h[k] = v
+        [ h, i ]
+      end
+
+    [ lst.first[1], as, lnumber, [] ]
   end
 end
-
-__END__
-  flon source:
-
-static fdja_value *l_to_tree(
-  flu_list *l, fdja_value *lnumber, fdja_value *node, fdja_value *msg)
-{
-  if (l->size == 1) return v_to_tree(l->first->item, lnumber, node, msg);
-
-  fdja_value *r = fdja_array_malloc();
-
-  fdja_push(r, fdja_clone(l->first->item));
-  fdja_value *atts = fdja_push(r, fdja_object_malloc());
-
-  size_t index = 0;
-  for (flu_node *n = l->first->next; n; n = n->next)
-  {
-    fdja_value *v = n->item;
-    char *key = v->key; if (is_index(key)) key = flu_sprintf("_%zu", index);
-    ++index;
-    fdja_set(atts, key, fdja_clone(v));
-    if (key != v->key) free(key);
-  }
-
-  fdja_push(r, fdja_clone(lnumber)); // line number
-  fdja_push(r, fdja_array_malloc()); // no children
-
-  return r;
-}
 

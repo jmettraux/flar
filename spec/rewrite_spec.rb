@@ -106,22 +106,24 @@ describe Flor::Executor do
         )
       end
 
-#      it "rewrites  a b > c d"
-#      {
-#        msg = mrad("a b > c d");
-#        //fdja_putdc(fdja_l(msg, "tree"));
-#
-#        flon_rewrite_tree(node, msg);
-#
-#        expect(fdja_ld(msg, "tree") ===f ""
-#          "[ >, {}, 1, [ "
-#            "[ a, { _0: b }, 1, [] ], "
-#            "[ c, { _0: d }, 1, [] ] "
-#          "], sx ]");
-#
-#        expect(fdja_ls(node, "inst", NULL) ===f ">");
-#        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-#      }
+      it 'rewrites  a b > c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            a b > c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('>')
+
+        expect(node['tree']).to eq(
+          [ '>', {}, 2, [
+            [ 'a', { '_0' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ] ]
+        )
+      end
     end
   end
 end
