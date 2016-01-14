@@ -49,7 +49,24 @@ class Flor::Executor
 
   def rewrite_infix(op, node, message, tree)
 
-    nil
+    return nil unless tree[1].find { |k, v| v == op && k.match(/\A_\d+\z/) }
+
+    cn = []
+    l = [ tree[0] ]
+
+    (tree[1].keys + [ nil ]).each do |k|
+
+      v = tree[1][k]
+
+      if k && ! (v == op &&  k.match(/\A_\d+\z/))
+        l << v; next
+      end
+
+      cn << l_to_tree(l, tree[2], node, message)
+      l = []
+    end
+
+    [ op, {}, tree[2], cn ]
   end
 
   def rewrite_pinfix(op, node, message, tree)
@@ -99,6 +116,8 @@ class Flor::Executor
   def l_to_tree(lst, lnumber, node, message)
 
     return v_to_tree(lst.first, lnumber, node, message) if lst.size == 1
+
+    # TODO
   end
 end
 
