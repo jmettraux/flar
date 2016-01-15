@@ -76,7 +76,61 @@ class Flor::Executor
     rewrite_prefix(op, node, message, tree)
   end
 
+  def rewrite_else_if(node, message, tree)
+
+    nil # TODO
+  end
+
+  def rewrite_post_if(node, message, tree)
+
+    nil # TODO
+  end
+
+  def rewrite_head_if(node, message, tree)
+
+    return nil unless %w[ if elif elsif unless else ].include?(tree[0])
+
+    cn = Flor.dup(tree[3])
+
+    cnd = []; thn = []; els = []
+    l = cnd
+
+    tree[1].each do |k, v|
+      case v
+        when 'then' then l = thn
+        when 'else' then l = els
+        else l << [ k, v ]
+      end
+    end
+
+    if cnd.any?
+      if thn.any?
+        if els.any?
+          cn.unshift(l_to_tree(els, tree[2], node, message))
+        end
+        cn.unshift(l_to_tree(thn, tree[2], node, message))
+      end
+      cn.unshift(l_to_tree(cnd, tree[2], node, message))
+    end
+
+    #if (has_then)
+    #{
+    #  char *inst = "ife";
+    #  if (*fdja_srk(tree->child) == 'u') inst = "unlesse";
+    #  else if (*fdja_srk(tree->child) == 'e') inst = "elsif";
+    #  fdja_replace(tree->child, fdja_v(inst));
+    #}
+    if thn.any?
+    end
+
+    [ tree[0], {}, tree[2], cn ]
+  end
+
   def rewrite(node, message, tree)
+
+    rewrite_else_if(node, message, tree) ||
+    rewrite_post_if(node, message, tree) ||
+    rewrite_head_if(node, message, tree) ||
 
     # in precedence order
     #
