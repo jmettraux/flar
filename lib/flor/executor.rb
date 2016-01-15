@@ -28,10 +28,11 @@ module Flor
 
   class FlorDollar < Flor::Dollar
 
-    def initialize(execution, node)
+    def initialize(execution, node, message)
 
       @execution = execution
       @node = node
+      @message = message
     end
 
     def lookup(k)
@@ -42,6 +43,8 @@ module Flor
     protected
 
     def do_lookup(node, k)
+
+      # TODO continue me
 
       node['vars'][k]
     end
@@ -106,7 +109,7 @@ module Flor
 
       tree0 = message['tree']
 
-      dol = FlorDollar.new(@execution, node)
+      dol = FlorDollar.new(@execution, node, message)
 
       tree1 = [ *expand(tree0[0, 2], dol), *tree0[2..-1] ]
       tree1 = rewrite(node, message, tree1)
