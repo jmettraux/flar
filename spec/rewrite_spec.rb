@@ -166,6 +166,65 @@ describe Flor::Executor do
           ] ]
         )
       end
+
+      it 'rewrites  a and (b or c)' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            a and (b or c)
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('and')
+
+        expect(node['tree']).to eq(
+          [ 'and', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', { '_0' => 'or', '_1' => 'c' }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  (a or b) and c' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            (a or b) and c
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('and')
+
+        expect(node['tree']).to eq(
+          [ 'and', {}, 2, [
+            [ 'a', { '_0' => 'or', '_1' => 'b' }, 2, [] ],
+            [ 'c', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  trace a or (trace b or trace c)' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            trace a or (trace b or trace c)
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('or')
+
+        expect(node['tree']).to eq(
+          [ 'or', {}, 2, [
+            [ 'trace',
+              { '_0' => 'a' }, 2, [] ],
+            [ 'trace',
+              { '_0' => 'b', '_1' => 'or', '_2' => 'trace', '_3' => 'c' }, 2, [] ]
+          ] ]
+        )
+      end
     end
   end
 end
