@@ -44,9 +44,19 @@ module Flor
 
     def do_lookup(node, k)
 
-      # TODO continue me
+      prefix = 'f' # defaults to field
 
-      node['vars'][k]
+      if m = k.match(/\A([lgd](?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+        prefix, k = [ m[1], m[2] ]
+      end
+
+      if prefix.index('v')
+        node['vars'][k]
+      elsif prefix == 'w'
+        nil
+      else # field
+        @message['payload'][k]
+      end
     end
   end
 
