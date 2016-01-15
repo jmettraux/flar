@@ -125,6 +125,48 @@ describe Flor::Executor do
         )
       end
     end
+
+    context "'and', 'or':" do
+
+      it 'rewrites  a or b or c' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            a or b or c
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('or')
+
+        expect(node['tree']).to eq(
+          [ 'or', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ],
+            [ 'c', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  a or b and c' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            a or b and c
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('or')
+
+        expect(node['tree']).to eq(
+          [ 'or', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', { '_0' => 'and', '_1' => 'c' }, 2, [] ]
+          ] ]
+        )
+      end
+    end
   end
 end
 
