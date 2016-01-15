@@ -226,6 +226,49 @@ describe Flor::Executor do
         )
       end
     end
+
+    context '$(cmp):' do
+
+      it 'rewrites  $(cmp) x y' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            $(cmp) x y
+          },
+          payload: { 'cmp' => '>' })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('>')
+
+        expect(node['tree']).to eq(
+          [ '>', {}, 2, [
+            [ 'x', {}, 2, [] ],
+            [ 'y', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  x $(cmp) y' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            x $(cmp) y
+          },
+          payload: { 'cmp' => '>' })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('>')
+
+        expect(node['tree']).to eq(
+          [ '>', {}, 2, [
+            [ 'x', {}, 2, [] ],
+            [ 'y', {}, 2, [] ]
+          ] ]
+        )
+      end
+    end
   end
 end
 
