@@ -113,17 +113,20 @@ class Flor::Executor
       cn.unshift(l_to_tree(cnd, tree[2], node, message))
     end
 
-    #if (has_then)
-    #{
-    #  char *inst = "ife";
-    #  if (*fdja_srk(tree->child) == 'u') inst = "unlesse";
-    #  else if (*fdja_srk(tree->child) == 'e') inst = "elsif";
-    #  fdja_replace(tree->child, fdja_v(inst));
-    #}
-    if thn.any?
-    end
+    inst =
+      if thn.any?
+        if tree[0][0, 1] == 'u'
+          'unlesse'
+        elsif tree[0][0, 1] == 'e'
+          'elsif'
+        else
+          'ife'
+        end
+      else
+        tree[0]
+      end
 
-    [ tree[0], {}, tree[2], cn ]
+    [ inst, {}, tree[2], cn ]
   end
 
   def rewrite(node, message, tree)

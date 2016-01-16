@@ -289,195 +289,180 @@ describe Flor::Executor do
           ] ]
         )
       end
+
+      it 'rewrites  unless a' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            unless a
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('unless')
+
+        expect(node['tree']).to eq(
+          [ 'unless', {}, 2, [
+            [ 'a', {}, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  if a > b' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if a > b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('if')
+
+        expect(node['tree']).to eq(
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  if a > b \ c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if a > b
+              c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('if')
+
+        expect(node['tree']).to eq(
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 3, [] ]
+          ] ]
+        )
+      end
+
+      it "doesn't rewrite  if \ a > b" do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if
+              a > b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('if')
+
+        expect(node['tree']).to eq(nil)
+      end
+
+      it 'rewrites  if true' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if true
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('if')
+
+        expect(node['tree']).to eq(
+          [ 'if', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  elif true' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            elif true
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('elif')
+
+        expect(node['tree']).to eq(
+          [ 'elif', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  elsif true' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            elsif true
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('elsif')
+
+        expect(node['tree']).to eq(
+          [ 'elsif', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
+          ] ]
+        )
+      end
+    end
+
+    context 'then:' do
+
+      it 'rewrites  if a > b then c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if a > b then c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('ife')
+
+        expect(node['tree']).to eq(
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  if a > b then c d else e f' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if a > b then c d else e f
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('ife')
+
+        expect(node['tree']).to eq(
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ],
+            [ 'e', { '_0' => 'f' }, 2, [] ]
+          ] ]
+        )
+      end
     end
   end
 end
 
 __END__
-      it "rewrites  if a"
-      {
-        msg = mrad("if a");
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ if, {}, 1, [ "
-            "[ a, {}, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "if");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  unless a"
-      {
-        msg = mrad("unless a");
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ unless, {}, 1, [ "
-            "[ a, {}, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "unless");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  if a > b"
-      {
-        msg = mrad("if a > b");
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ if, {}, 1, [ "
-            "[ a, { _0: >, _1: b }, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "if");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  if a > b \\ c d"
-      {
-        msg = mrad(
-          "if a > b\n"
-          "  c d"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ if, {}, 1, [ "
-            "[ a, { _0: >, _1: b }, 1, [] ], "
-            "[ c, { _0: d }, 2, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "if");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "doesn't rewrite  if \\ a > b"
-      {
-        msg = mrad(
-          "if \n"
-          "  a > b\n"
-          "  c d\n"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ if, {}, 1, [ "
-            "[ a, { _0: >, _1: b }, 2, [] ], "
-            "[ c, { _0: d }, 3, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "if");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  if true"
-      {
-        msg = mrad(
-          "if true\n"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ if, {}, 1, [ "
-            "[ val, { _0: true }, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "if");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  elif true"
-      {
-        msg = mrad(
-          "elif true\n"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ elif, {}, 1, [ "
-            "[ val, { _0: true }, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "elif");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
-      it "rewrites  elsif true"
-      {
-        msg = mrad(
-          "elsif true\n"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ elsif, {}, 1, [ "
-            "[ val, { _0: true }, 1, [] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "elsif");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
       context "then:"
       {
-        it "rewrites  if a > b then c d"
-        {
-          msg = mrad(
-            "if a > b then c d\n"
-          );
-          //fdja_putdc(fdja_l(msg, "tree"));
-
-          flon_rewrite_tree(node, msg);
-
-          expect(fdja_ld(msg, "tree") ===f ""
-            "[ ife, {}, 1, [ "
-              "[ a, { _0: >, _1: b }, 1, [] ], "
-              "[ c, { _0: d }, 1, [] ] "
-            "], sx ]");
-
-          expect(fdja_ls(node, "inst", NULL) ===f "ife");
-          expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-        }
-
-        it "rewrites  if a > b then c d else f g"
-        {
-          msg = mrad(
-            "if a > b then c d else e f\n"
-          );
-          //fdja_putdc(fdja_l(msg, "tree"));
-
-          flon_rewrite_tree(node, msg);
-
-          expect(fdja_ld(msg, "tree") ===f ""
-            "[ ife, {}, 1, [ "
-              "[ a, { _0: >, _1: b }, 1, [] ], "
-              "[ c, { _0: d }, 1, [] ], "
-              "[ e, { _0: f }, 1, [] ] "
-            "], sx ]");
-
-          expect(fdja_ls(node, "inst", NULL) ===f "ife");
-          expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-        }
-
         it "rewrites  elsif a > b then c d"
         {
           msg = mrad(
