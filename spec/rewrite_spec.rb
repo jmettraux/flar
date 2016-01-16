@@ -456,50 +456,45 @@ describe Flor::Executor do
           ] ]
         )
       end
+
+      it 'rewrites  elsif a > b then c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            elsif a > b then c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('elsif')
+
+        expect(node['tree']).to eq(
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ] ]
+        )
+      end
+
+      it 'rewrites  else if a > b then c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            else if a > b then c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('elsif')
+
+        expect(node['tree']).to eq(
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ] ]
+        )
+      end
     end
   end
 end
-
-__END__
-      context "then:"
-      {
-        it "rewrites  elsif a > b then c d"
-        {
-          msg = mrad(
-            "elsif a > b then c d\n"
-          );
-          //fdja_putdc(fdja_l(msg, "tree"));
-
-          flon_rewrite_tree(node, msg);
-
-          expect(fdja_ld(msg, "tree") ===f ""
-            "[ elsif, {}, 1, [ "
-              "[ a, { _0: >, _1: b }, 1, [] ], "
-              "[ c, { _0: d }, 1, [] ] "
-            "], sx ]");
-
-          expect(fdja_ls(node, "inst", NULL) ===f "elsif");
-          expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-        }
-
-        it "rewrites  else if a > b then c d"
-        {
-          msg = mrad(
-            "else if a > b then c d\n"
-          );
-          //fdja_putdc(fdja_l(msg, "tree"));
-
-          flon_rewrite_tree(node, msg);
-
-          expect(fdja_ld(msg, "tree") ===f ""
-            "[ elsif, {}, 1, [ "
-              "[ a, { _0: >, _1: b }, 1, [] ], "
-              "[ c, { _0: d }, 1, [] ] "
-            "], sx ]");
-
-          expect(fdja_ls(node, "inst", NULL) ===f "elsif");
-          expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-        }
-      }
-    }
 

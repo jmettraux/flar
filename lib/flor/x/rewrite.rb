@@ -78,7 +78,26 @@ class Flor::Executor
 
   def rewrite_else_if(node, message, tree)
 
-    nil # TODO
+    return nil unless tree[0] == 'else'
+    return nil unless tree[1]['_0'] == 'if'
+
+    as =
+      tree[1].inject([ {}, -1 ]) do |(h, i), (k, v)|
+        k =
+          if k == '_0'
+            nil
+          elsif k.match(/\A_\d+\z/)
+            i = i + 1
+            "_#{i}"
+          else
+            k
+          end
+        h[k] = v if k
+
+        [ h, i ]
+      end.first
+
+    [ 'elsif', as, tree[2], tree[3], *tree[4..-1] ]
   end
 
   def rewrite_post_if(node, message, tree)
