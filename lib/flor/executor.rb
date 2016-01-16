@@ -46,7 +46,7 @@ module Flor
 
       prefix = 'f' # defaults to field
 
-      if m = k.match(/\A([lgd](?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+      if m = k.match(/\A([lgd]?(?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
         prefix, k = [ m[1], m[2] ]
       end
 

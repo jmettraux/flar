@@ -20,7 +20,7 @@ describe 'Flor executions' do
     it 'expand the variables' do
 
       rad = %{
-        push l $(a)
+        push l $(v.a)
       }
 
       r = @executor.launch(rad, {}, { 'a' => 'A' })
