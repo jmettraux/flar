@@ -122,7 +122,9 @@ class Flor::Executor
     return tree unless foe
 
     postt = l_to_tree(postif, tree[2], node, message)
+
     pret = l_to_tree([ [ nil, tree[0] ]  ] + preif, tree[2], node, message)
+    pret[3] = tree[3]
 
     [ foe == 'if' ? 'ife' : 'unlesse', {}, tree[2], [ postt, pret ] ]
   end
