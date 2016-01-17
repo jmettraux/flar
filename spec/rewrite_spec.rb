@@ -346,6 +346,28 @@ describe Flor::Executor do
         )
       end
 
+      it 'rewrites  if a > b \ c \ d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            if a > b
+              c
+              d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('if')
+
+        expect(node['tree']).to eq(
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', {}, 3, [] ],
+            [ 'd', {}, 4, [] ]
+          ] ]
+        )
+      end
+
       it "doesn't rewrite  if \ a > b" do
 
         executor, node, message =
@@ -521,7 +543,7 @@ describe Flor::Executor do
 end
 
 __END__
-      it "rewrites  sequence if a > b \\ c \\ d"
+      it "rewrites  c if a > b \\ c \\ d"
       {
         msg = mrad(
           "c if a > b\n"
