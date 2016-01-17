@@ -495,6 +495,73 @@ describe Flor::Executor do
         )
       end
     end
+
+    context "tail 'if':" do
+
+      it 'rewrites  c d if a > b' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            c d if a > b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('ife')
+
+        expect(node['tree']).to eq(
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ] ]
+        )
+      end
+    end
   end
 end
+
+__END__
+      it "rewrites  sequence if a > b \\ c \\ d"
+      {
+        msg = mrad(
+          "c if a > b\n"
+          "  e f\n"
+          "  g h\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ ife, {}, 1, [ "
+            "[ a, { _0: >, _1: b }, 1, [] ], "
+            "[ c, {}, 1, [ "
+              "[ e, { _0: f }, 2, [] ], "
+              "[ g, { _0: h }, 3, [] ] "
+            "] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "ife");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+
+      it "rewrites  c d unless a > b"
+      {
+        msg = mrad(
+          "c d unless a > b\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ unlesse, {}, 1, [ "
+            "[ a, { _0: >, _1: b }, 1, [] ], "
+            "[ c, { _0: d }, 1, [] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "unlesse");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+    }
 

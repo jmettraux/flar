@@ -104,7 +104,27 @@ class Flor::Executor
 
   def rewrite_post_if(node, message, tree)
 
-    tree # TODO
+    foe = nil
+    preif = []
+    postif = nil
+    #
+    tree[1].each do |k, v|
+      if postif
+        postif << [ k, v ]
+      elsif v == 'if' || v == 'unless'
+        postif = []
+        foe = v
+      else
+        preif << [ k, v ]
+      end
+    end
+
+    return tree unless foe
+
+    postt = l_to_tree(postif, tree[2], node, message)
+    pret = l_to_tree([ [ nil, tree[0] ]  ] + preif, tree[2], node, message)
+
+    [ foe == 'if' ? 'ife' : 'unlesse', {}, tree[2], [ postt, pret ] ]
   end
 
   def rewrite_head_if(node, message, tree)
