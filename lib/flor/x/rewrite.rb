@@ -39,8 +39,8 @@ class Flor::Executor
 
   def rewrite_prefix(op, node, message, tree)
 
-    return nil unless tree[0] == op
-    return nil if tree[3].length > 0 # there are already children
+    return tree unless tree[0] == op
+    return tree if tree[3].length > 0 # there are already children
 
     cn = tree[1]
       .collect { |k, v| l_to_tree([ [ nil, v ] ], tree[2], node, message) }
@@ -50,7 +50,7 @@ class Flor::Executor
 
   def rewrite_infix(op, node, message, tree)
 
-    return nil unless tree[1].find { |k, v| v == op && k.match(/\A_\d+\z/) }
+    return tree unless tree[1].find { |k, v| v == op && k.match(/\A_\d+\z/) }
 
     cn = []
     l = [ [ nil, tree[0] ] ]
@@ -72,14 +72,16 @@ class Flor::Executor
 
   def rewrite_pinfix(op, node, message, tree)
 
-    rewrite_infix(op, node, message, tree) ||
-    rewrite_prefix(op, node, message, tree)
+    t = rewrite_infix(op, node, message, tree)
+    t = rewrite_prefix(op, node, message, t)
+
+    t
   end
 
   def rewrite_else_if(node, message, tree)
 
-    return nil unless tree[0] == 'else'
-    return nil unless tree[1]['_0'] == 'if'
+    return tree unless tree[0] == 'else'
+    return tree unless tree[1]['_0'] == 'if'
 
     as =
       tree[1].inject([ {}, -1 ]) do |(h, i), (k, v)|
@@ -102,12 +104,12 @@ class Flor::Executor
 
   def rewrite_post_if(node, message, tree)
 
-    nil # TODO
+    tree # TODO
   end
 
   def rewrite_head_if(node, message, tree)
 
-    return nil unless %w[ if elif elsif unless else ].include?(tree[0])
+    return tree unless %w[ if elif elsif unless else ].include?(tree[0])
 
     cn = Flor.dup(tree[3])
 
@@ -150,33 +152,33 @@ class Flor::Executor
 
   def rewrite(node, message, tree)
 
-    rewrite_else_if(node, message, tree) ||
-    rewrite_post_if(node, message, tree) ||
-    rewrite_head_if(node, message, tree) ||
+    t = rewrite_else_if(node, message, tree)
+    t = rewrite_post_if(node, message, t)
+    t = rewrite_head_if(node, message, t)
 
     # in precedence order
     #
-    rewrite_pinfix('or', node, message, tree) ||
-    rewrite_pinfix('and', node, message, tree) ||
+    t = rewrite_pinfix('or', node, message, t)
+    t = rewrite_pinfix('and', node, message, t)
     #
-    rewrite_pinfix('==', node, message, tree) ||
-    rewrite_pinfix('!=', node, message, tree) ||
+    t = rewrite_pinfix('==', node, message, t)
+    t = rewrite_pinfix('!=', node, message, t)
     #
-    rewrite_pinfix('=~', node, message, tree) ||
-    rewrite_pinfix('!~', node, message, tree) ||
+    t = rewrite_pinfix('=~', node, message, t)
+    t = rewrite_pinfix('!~', node, message, t)
     #
-    rewrite_pinfix('>', node, message, tree) ||
-    rewrite_pinfix('>=', node, message, tree) ||
-    rewrite_pinfix('<', node, message, tree) ||
-    rewrite_pinfix('<=', node, message, tree) ||
+    t = rewrite_pinfix('>', node, message, t)
+    t = rewrite_pinfix('>=', node, message, t)
+    t = rewrite_pinfix('<', node, message, t)
+    t = rewrite_pinfix('<=', node, message, t)
     #
-    rewrite_pinfix('+', node, message, tree) ||
-    rewrite_pinfix('-', node, message, tree) ||
-    rewrite_pinfix('*', node, message, tree) ||
-    rewrite_pinfix('/', node, message, tree) ||
-    rewrite_pinfix('%', node, message, tree) ||
+    t = rewrite_pinfix('+', node, message, t)
+    t = rewrite_pinfix('-', node, message, t)
+    t = rewrite_pinfix('*', node, message, t)
+    t = rewrite_pinfix('/', node, message, t)
+    t = rewrite_pinfix('%', node, message, t)
     #
-    tree
+    t
   end
 
   def v_to_tree(val, lnumber, node, message)
