@@ -586,6 +586,27 @@ describe Flor::Executor do
         )
       end
     end
+
+    context "'else if':" do
+
+      it 'rewrites  else if a > b' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            else if a > b
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('elsif')
+
+        expect(node['tree']).to eq(
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
+          ], 'sx' ]
+        )
+      end
+    end
   end
 end
 
