@@ -67,7 +67,7 @@ class Flor::Executor
       l = []
     end
 
-    [ op, {}, tree[2], cn ]
+    [ op, {}, tree[2], cn, *tree[4] ]
   end
 
   def rewrite_pinfix(op, node, message, tree)
@@ -99,7 +99,7 @@ class Flor::Executor
         [ h, i ]
       end.first
 
-    [ 'elsif', as, tree[2], tree[3], *tree[4..-1] ]
+    [ 'elsif', as, tree[2], tree[3], *tree[4] ]
   end
 
   def rewrite_post_if(node, message, tree)
@@ -126,7 +126,7 @@ class Flor::Executor
     pret = l_to_tree([ [ nil, tree[0] ]  ] + preif, tree[2], node, message)
     pret[3] = tree[3]
 
-    [ foe == 'if' ? 'ife' : 'unlesse', {}, tree[2], [ postt, pret ] ]
+    [ foe == 'if' ? 'ife' : 'unlesse', {}, tree[2], [ postt, pret ], *tree[4] ]
   end
 
   def rewrite_head_if(node, message, tree)
@@ -169,7 +169,7 @@ class Flor::Executor
         tree[0]
       end
 
-    [ inst, {}, tree[2], cn ]
+    [ inst, {}, tree[2], cn, *tree[4] ]
   end
 
   def rewrite(node, message, tree)

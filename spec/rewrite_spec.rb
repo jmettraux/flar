@@ -37,6 +37,10 @@ class RewriteExecutor < Flor::TransientExecutor
       'mtime' => now }
     executor.execution['nodes']['0_0'] = node
 
+    tree =
+      tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
+    tree << 'sx' # the "filename"
+
     message = {
       'point' => 'execute',
       'tree' => tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree,
@@ -83,7 +87,7 @@ describe Flor::Executor do
           [ '>', {}, 2, [
             [ 'a', {}, 2, [] ],
             [ 'b', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -102,7 +106,7 @@ describe Flor::Executor do
           [ '>', {}, 2, [
             [ 'a', {}, 2, [] ],
             [ 'b', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -121,7 +125,7 @@ describe Flor::Executor do
           [ '>', {}, 2, [
             [ 'a', { '_0' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
@@ -144,7 +148,7 @@ describe Flor::Executor do
             [ 'a', {}, 2, [] ],
             [ 'b', {}, 2, [] ],
             [ 'c', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -163,7 +167,7 @@ describe Flor::Executor do
           [ 'or', {}, 2, [
             [ 'a', {}, 2, [] ],
             [ 'b', { '_0' => 'and', '_1' => 'c' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -182,7 +186,7 @@ describe Flor::Executor do
           [ 'and', {}, 2, [
             [ 'a', {}, 2, [] ],
             [ 'b', { '_0' => 'or', '_1' => 'c' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -201,7 +205,7 @@ describe Flor::Executor do
           [ 'and', {}, 2, [
             [ 'a', { '_0' => 'or', '_1' => 'b' }, 2, [] ],
             [ 'c', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -222,7 +226,7 @@ describe Flor::Executor do
               { '_0' => 'a' }, 2, [] ],
             [ 'trace',
               { '_0' => 'b', '_1' => 'or', '_2' => 'trace', '_3' => 'c' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
@@ -245,7 +249,7 @@ describe Flor::Executor do
           [ '>', {}, 2, [
             [ 'x', {}, 2, [] ],
             [ 'y', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -265,7 +269,7 @@ describe Flor::Executor do
           [ '>', {}, 2, [
             [ 'x', {}, 2, [] ],
             [ 'y', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
@@ -286,7 +290,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'if', {}, 2, [
             [ 'a', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -304,7 +308,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'unless', {}, 2, [
             [ 'a', {}, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -322,7 +326,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'if', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -342,7 +346,7 @@ describe Flor::Executor do
           [ 'if', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 3, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -364,7 +368,7 @@ describe Flor::Executor do
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', {}, 3, [] ],
             [ 'd', {}, 4, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -397,7 +401,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'if', {}, 2, [
             [ 'val', { '_0' => true }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -415,7 +419,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'elif', {}, 2, [
             [ 'val', { '_0' => true }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -433,7 +437,7 @@ describe Flor::Executor do
         expect(node['tree']).to eq(
           [ 'elsif', {}, 2, [
             [ 'val', { '_0' => true }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
@@ -455,7 +459,7 @@ describe Flor::Executor do
           [ 'ife', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -475,7 +479,7 @@ describe Flor::Executor do
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ],
             [ 'e', { '_0' => 'f' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -494,7 +498,7 @@ describe Flor::Executor do
           [ 'elsif', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -513,7 +517,7 @@ describe Flor::Executor do
           [ 'elsif', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
@@ -535,7 +539,7 @@ describe Flor::Executor do
           [ 'ife', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -559,7 +563,7 @@ describe Flor::Executor do
               [ 'e', { '_0' => 'f' }, 3, [] ],
               [ 'g', { '_0' => 'h' }, 4, [] ]
             ] ]
-          ] ]
+          ], 'sx' ]
         )
       end
 
@@ -578,7 +582,7 @@ describe Flor::Executor do
           [ 'unlesse', {}, 2, [
             [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
             [ 'c', { '_0' => 'd' }, 2, [] ]
-          ] ]
+          ], 'sx' ]
         )
       end
     end
