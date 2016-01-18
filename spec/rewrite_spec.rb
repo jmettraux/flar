@@ -628,6 +628,142 @@ describe Flor::Executor do
         )
       end
     end
+
+    context "'set':" do
+
+      it "doesn't rewrite  set" do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            set
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('set')
+
+        expect(node['tree']).to eq(nil)
+      end
+
+      it "doesn't rewrite  set k" do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            set k
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('set')
+
+        expect(node['tree']).to eq(nil)
+      end
+
+      it 'rewrites  set k: v' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            set k: v
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('set')
+
+        expect(node['tree']).to eq(
+          [ 'set', { '_0' => 'k' }, 2, [
+            [ 'v', {}, 2, [] ]
+          ], 'sx' ]
+        )
+      end
+    end
   end
 end
+
+__END__
+      it "rewrites  set k0: v0, k1: v1"
+      {
+        msg = mrad(
+          "set k0: v0, k1: v1\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ sequence, {}, 1, [ "
+            "[ set, { _0: k0 }, 1, [ "
+              "[ v0, {}, 1, [] ] "
+            "] ], "
+            "[ set, { _0: k1 }, 1, [ "
+              "[ v1, {}, 1, [] ] "
+            "] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "sequence");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+
+      it "rewrites  set k0: v0, k1: (a + 1), k2: v2"
+      {
+        msg = mrad(
+          "set k0: v0, k1: (a + 1), k2: v2\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ sequence, {}, 1, [ "
+            "[ set, { _0: k0 }, 1, [ "
+              "[ v0, {}, 1, [] ] "
+            "] ], "
+            "[ set, { _0: k1 }, 1, [ "
+              "[ a, { _0: +, _1: 1 }, 1, [] ] "
+            "] ], "
+            "[ set, { _0: k2 }, 1, [ "
+              "[ v2, {}, 1, [] ] "
+            "] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "sequence");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+
+      it "rewrites  set k: 1"
+      {
+        msg = mrad(
+          "set k: 1\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ set, { _0: k }, 1, [ "
+            "[ val, { _0: 1 }, 1, [] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "set");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+
+      it "rewrites  set k: blue"
+      {
+        msg = mrad(
+          "set k: blue\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ set, { _0: k }, 1, [ "
+            "[ blue, {}, 1, [] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "set");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+    }
 

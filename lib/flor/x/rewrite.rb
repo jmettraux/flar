@@ -172,11 +172,36 @@ class Flor::Executor
     [ inst, {}, tree[2], cn, *tree[4] ]
   end
 
+  def rewrite_set(node, message, tree)
+
+    return tree if tree[0] != 'set'
+    return tree if tree[3].any? # one or more children
+
+    return tree if tree[1].empty? # no attributes
+    return tree if tree[1].keys == [ '_0' ] # only _0 attribute
+
+    ln = tree[2]
+
+    sets =
+      tree[1].inject([]) do |a, (k, v)|
+        next a if k.match(/\A_\d+\z/)
+        a << [ 'set', { '_0' => k }, ln, [ v_to_tree([ k, v ], ln, node, message) ] ]
+        a
+      end
+
+    r = sets.size == 1 ? sets.first : [ 'sequence', {}, ln, sets, *tree[4] ]
+    r << tree[4] if tree[4]
+
+    r
+  end
+
   def rewrite(node, message, tree)
 
     t = rewrite_else_if(node, message, tree)
     t = rewrite_post_if(node, message, t)
     t = rewrite_head_if(node, message, t)
+
+    t = rewrite_set(node, message, t)
 
     # in precedence order
     #
