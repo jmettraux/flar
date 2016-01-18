@@ -607,6 +607,27 @@ describe Flor::Executor do
         )
       end
     end
+
+    context "'else':" do
+
+      it 'rewrites  else c d' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            else c d
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('else')
+
+        expect(node['tree']).to eq(
+          [ 'else', {}, 2, [
+            [ 'c', { '_0' => 'd' }, 2, [] ]
+          ], 'sx' ]
+        )
+      end
+    end
   end
 end
 
