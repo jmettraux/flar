@@ -676,34 +676,34 @@ describe Flor::Executor do
           ], 'sx' ]
         )
       end
+
+      it 'rewrites  set k0: v0, k1: v1' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            set k0: v0, k1: v1
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('sequence')
+
+        expect(node['tree']).to eq(
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'k0' }, 2, [
+              [ 'v0', {}, 2, [] ]
+            ] ],
+            [ 'set', { '_0' => 'k1' }, 2, [
+              [ 'v1', {}, 2, [] ]
+            ] ]
+          ], 'sx' ]
+        )
+      end
     end
   end
 end
 
 __END__
-      it "rewrites  set k0: v0, k1: v1"
-      {
-        msg = mrad(
-          "set k0: v0, k1: v1\n"
-        );
-        //fdja_putdc(fdja_l(msg, "tree"));
-
-        flon_rewrite_tree(node, msg);
-
-        expect(fdja_ld(msg, "tree") ===f ""
-          "[ sequence, {}, 1, [ "
-            "[ set, { _0: k0 }, 1, [ "
-              "[ v0, {}, 1, [] ] "
-            "] ], "
-            "[ set, { _0: k1 }, 1, [ "
-              "[ v1, {}, 1, [] ] "
-            "] ] "
-          "], sx ]");
-
-        expect(fdja_ls(node, "inst", NULL) ===f "sequence");
-        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
-      }
-
       it "rewrites  set k0: v0, k1: (a + 1), k2: v2"
       {
         msg = mrad(

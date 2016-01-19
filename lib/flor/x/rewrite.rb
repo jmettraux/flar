@@ -189,7 +189,7 @@ class Flor::Executor
         a
       end
 
-    r = sets.size == 1 ? sets.first : [ 'sequence', {}, ln, sets, *tree[4] ]
+    r = sets.size == 1 ? sets.first : [ 'sequence', {}, ln, sets ]
     r << tree[4] if tree[4]
 
     r
