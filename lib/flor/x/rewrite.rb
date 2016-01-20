@@ -37,6 +37,47 @@ class Flor::Executor
     o[3].all? { |e| is_tree?(e) } # overkill?
   end
 
+#static int rewrite_as_call_invoke_or_val(
+#  fdja_value *node, fdja_value *msg, fdja_value *tree)
+#{
+#  int r = 0; // "not rewritten" for now
+#
+#  fdja_value *vname = fdja_l(tree, "0");
+#  char *name = NULL;
+#
+#  if ( ! fdja_is_stringy(vname)) goto _over;
+#
+#  name = fdja_to_string(vname);
+#
+#  if (lookup_instruction('e', name)) goto _over;
+#
+#  r = 1; // "rewritten" for now
+#
+#  fdja_value *v = lookup_var(node, 'l', name); // 'l' for "local"
+#
+#  if (is_callable(v))
+#  {
+#    //fdja_psetv(node, "inst", "call");
+#    fdja_replace(fdja_l(tree, "0"), fdja_s("call"));
+#    unshift_attribute(name, tree);
+#  }
+#  else if (fdja_lz(tree, "1") == 0 && fdja_lz(tree, "3") == 0)
+#  {
+#    fdja_replace(fdja_l(tree, "0"), fdja_s("val"));
+#    unshift_attribute(name, tree);
+#  }
+#  else
+#  {
+#    r = 0;
+#  }
+#
+#  return r;
+#}
+  def rewrite_as_call_invoke_or_val(node, message, tree)
+
+    tree
+  end
+
   def rewrite_prefix(op, node, message, tree)
 
     return tree unless tree[0] == op
@@ -222,7 +263,9 @@ class Flor::Executor
 
   def rewrite(node, message, tree)
 
-    t = rewrite_else_if(node, message, tree)
+    t = rewrite_as_call_invoke_or_val(node, message, tree);
+
+    t = rewrite_else_if(node, message, t)
     t = rewrite_post_if(node, message, t)
     t = rewrite_head_if(node, message, t)
 
