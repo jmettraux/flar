@@ -762,6 +762,53 @@ describe Flor::Executor do
         )
       end
     end
+
+    context '():' do
+
+      it 'rewrites  task bob count: (+ 1 2)' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            task bob count: (+ 1 2)
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('sequence')
+
+        expect(node['tree']).to eq(
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'w._0' }, 2, [
+              [ '+', { '_0' => 1, '_1' => 2 }, 2, [] ]
+            ] ],
+            [ 'task', { '_0' => 'bob', 'count' => '$(w._0)' }, 2, [] ]
+          ], 'sx' ]
+        )
+      end
+    end
   end
 end
+
+__END__
+      it "rewrites  sub (1 + 2)"
+      {
+        msg = mrad(
+          "sub (1 + 2)\n"
+        );
+        //fdja_putdc(fdja_l(msg, "tree"));
+
+        flon_rewrite_tree(node, msg);
+
+        expect(fdja_ld(msg, "tree") ===f ""
+          "[ sequence, {}, 1, [ "
+            "[ set, { _0: w._0 }, 1, [ "
+              "[ 1, { _0: +, _1: 2 }, 1, [] ] "
+            "] ], "
+            "[ sub, { _0: $(w._0) }, 1, [] ] "
+          "], sx ]");
+
+        expect(fdja_ls(node, "inst", NULL) ===f "sequence");
+        expect(fdja_ld(node, "tree", NULL) ===F fdja_ld(msg, "tree"));
+      }
+    }
 

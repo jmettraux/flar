@@ -195,6 +195,31 @@ class Flor::Executor
     r
   end
 
+  def rewrite_parens(node, message, tree)
+
+    return tree unless tree[1].values.find { |c| is_tree?(c) }
+
+    ln = tree[2]
+    catts = {}
+    core = [ tree[0], catts, ln, tree[3] ]
+    schildren = []
+
+    j = 0
+    tree[1].each do |k, v|
+      if is_tree?(v)
+        schildren << [ 'set', { '_0' => "w._#{j}" }, ln, [ v ] ]
+        catts[k] = "$(w._#{j})"
+        j = j + 1
+      else
+        catts[k] = v
+      end
+    end
+
+    schildren << core
+
+    [ 'sequence', {}, ln, schildren, *tree[4] ]
+  end
+
   def rewrite(node, message, tree)
 
     t = rewrite_else_if(node, message, tree)
@@ -224,7 +249,9 @@ class Flor::Executor
     t = rewrite_pinfix('*', node, message, t)
     t = rewrite_pinfix('/', node, message, t)
     t = rewrite_pinfix('%', node, message, t)
-    #
+
+    t = rewrite_parens(node, message, t);
+
     t
   end
 
