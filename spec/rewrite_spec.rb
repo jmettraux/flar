@@ -785,6 +785,27 @@ describe Flor::Executor do
           ], 'sx' ]
         )
       end
+
+      it 'rewrites  sub (1 + 2)' do
+
+        executor, node, message =
+          RewriteExecutor.prepare(%{
+            sub (1 + 2)
+          })
+
+        executor.rewrite_tree(node, message)
+
+        expect(node['inst']).to eq('sequence')
+
+        expect(node['tree']).to eq(
+          [ 'sequence', {}, 1, [
+            [ 'set', { '_0' => 'w._0' }, 2, [
+              [ '1', { '_0' => '+', '_1' => 2 }, 2, [] ]
+            ] ],
+            [ 'sub', { '_0' => '$(w._0)' }, 2, [] ]
+          ], 'sx' ]
+        )
+      end
     end
   end
 end
