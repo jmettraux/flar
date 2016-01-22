@@ -269,6 +269,16 @@ describe Flor::Radial do
           __LINE__ ],
 
         [
+          "task Alan value: (1 + 2)",
+          [ 'task', {
+            '_0' => 'Alan',
+            'value' => [
+              [ 'val', { '_0'=>1 }, 1, [] ],
+              { '_0' => '+', '_1' => 2 }, 1, [] ]
+            }, 1, [] ],
+          __LINE__ ],
+
+        [
           "sub (1 + 2)",
           [ 'sub', {
             '_0' => [
