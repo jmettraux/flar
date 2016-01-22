@@ -798,9 +798,10 @@ describe Flor::Executor do
         expect(node['inst']).to eq('sequence')
 
         expect(node['tree']).to eq(
-          [ 'sequence', {}, 1, [
+          [ 'sequence', {}, 2, [
             [ 'set', { '_0' => 'w._0' }, 2, [
-              [ 1, { '_0' => '+', '_1' => 2 }, 2, [] ]
+              [ [ 'val', { '_0' => 1 }, 2, [] ],
+                { '_0' => '+', '_1' => 2 }, 2, [] ]
             ] ],
             [ 'sub', { '_0' => '$(w._0)' }, 2, [] ]
           ], 'sx' ]

@@ -201,6 +201,9 @@ module Flor
 
         if t
 
+          gt = t.lookup(:rad_g)
+          lin = gt.input.string[0..gt.offset].scan("\n").count + 1
+
           if it = t.lookup(:rad_i)
             @indent = it.string.length
           end
@@ -215,7 +218,7 @@ module Flor
           elsif vt.name == :rad_p
             nam = Flor::Radial.rewrite(vt)
           else
-            atts['_0'] = Flor::Radial.rewrite(vt)
+            nam = [ 'val', { '_0' => Flor::Radial.rewrite(vt) }, lin, [] ]
           end
 
           t.lookup(:rad_g).c1.gather(:rad_e).each_with_index do |et, i|
@@ -229,10 +232,7 @@ module Flor
             atts[k] = v
           end
 
-          gt = t.lookup(:rad_g)
-          lin = gt.input.string[0..gt.offset].scan("\n").count + 1
-
-          @a = [ nam, atts, lin ]
+          @a = (nam.is_a?(Array) && atts.empty?) ? nam : [ nam, atts, lin ]
 
         else
 
@@ -242,7 +242,7 @@ module Flor
 
       def to_a
 
-        [ *@a, @children ]
+        [ *@a[0, 3], @children ]
       end
 
       def append(line)
