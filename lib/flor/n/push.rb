@@ -30,23 +30,20 @@ class Flor::Ins::Push < Flor::Instruction
 
   def execute
 
-    #payload['ret'] = attributes['_0']
-
     field = attributes['_0']
     array = (payload[field] ||= [])
+    asize = array.size
 
     return error_reply("target value is not an array") unless array.is_a?(Array)
 
-    i = 0
     attributes.each do |k, v|
       next if k == '_0'
       array.push(v)
       payload['ret'] = v
-      i += 1
     end
 
-    if ret = (i == 0 && payload['ret'])
-      array.push(payload['ret'])
+    if ret = (array.size == asize && payload['ret'])
+      array.push(ret)
     end
 
     reply
