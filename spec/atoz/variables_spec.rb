@@ -27,7 +27,7 @@ describe 'Flor executions' do
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'l' => [ 'A' ] })
+      expect(r['payload']).to eq({ 'l' => [ 'A' ], 'ret' => 'A' })
     end
   end
 end

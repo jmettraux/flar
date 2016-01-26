@@ -26,7 +26,7 @@ describe 'Flor instructions' do
       r = @executor.launch(rad, { 'l' => [ 0 ] }, {})
 
       expect(r['point']).to eq('terminated')
-      expect(r['payload']).to eq({ 'l' => [ 0, 1 ] })
+      expect(r['payload']).to eq({ 'l' => [ 0, 1 ], 'ret' => 1 })
     end
 
     it 'creates a new array if necessary' do
@@ -38,7 +38,19 @@ describe 'Flor instructions' do
       r = @executor.launch(rad, {}, {})
 
       expect(r['point']).to eq('terminated')
-      expect(r['payload']).to eq({ 'l' => [ 1 ] })
+      expect(r['payload']).to eq({ 'l' => [ 1 ], 'ret' => 1 })
+    end
+
+    it 'pushes one or more elements' do
+
+      rad = %{
+        push l 1 'a'
+      }
+
+      r = @executor.launch(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'l' => [ 1, 'a' ], 'ret' => 'a' })
     end
 
     it 'fails if the target is not an array' do
@@ -53,7 +65,20 @@ describe 'Flor instructions' do
       expect(r['error']['text']).to eq('target value is not an array')
     end
 
-    it 'pushes $(ret) when no attributes'
+    it 'pushes $(ret) when no attributes' do
+
+      rad = %{
+        + 1 2
+        push l
+      }
+
+      r = @executor.launch(rad, {}, {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })
+    end
+
+    it 'pushes the result of its children'
   end
 end
 

@@ -37,7 +37,17 @@ class Flor::Ins::Push < Flor::Instruction
 
     return error_reply("target value is not an array") unless array.is_a?(Array)
 
-    attributes.each { |k, v| array.push(v) unless k == '_0' }
+    i = 0
+    attributes.each do |k, v|
+      next if k == '_0'
+      array.push(v)
+      payload['ret'] = v
+      i += 1
+    end
+
+    if ret = (i == 0 && payload['ret'])
+      array.push(payload['ret'])
+    end
 
     reply
   end
