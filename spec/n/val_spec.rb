@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         2
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       #expect(r['exid']).to eq(exid)

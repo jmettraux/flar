@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         +
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 0 })
@@ -37,7 +37,7 @@ describe 'Flor instructions' do
           2
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 3 })
@@ -52,7 +52,7 @@ describe 'Flor instructions' do
           -1
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 4 })
@@ -67,7 +67,7 @@ describe 'Flor instructions' do
         *
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 0 })
@@ -82,7 +82,7 @@ describe 'Flor instructions' do
           -1
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => -6 })

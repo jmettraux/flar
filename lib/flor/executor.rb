@@ -201,7 +201,7 @@ module Flor
         'errors' => [] }
     end
 
-    def launch(tree, fields, variables)
+    def launch(tree, opts={})
 
       tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
 
@@ -212,8 +212,10 @@ module Flor
           'exid' => @execution['exid'],
           'nid' => '0',
           'tree' => tree,
-          'payload' => fields,
-          'vars' => variables }
+          'payload' => opts[:payload] || opts[:fields] || {},
+          'vars' => opts[:variables] || {} }
+
+      return nil if opts[:nowait]
 
       message = nil
 

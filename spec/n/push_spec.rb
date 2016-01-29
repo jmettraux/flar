@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = @executor.launch(rad, { 'l' => [ 0 ] }, {})
+      r = @executor.launch(rad, fields: { 'l' => [ 0 ] })
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 0, 1 ], 'ret' => 1 })
@@ -35,7 +35,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 1 ], 'ret' => 1 })
@@ -47,7 +47,7 @@ describe 'Flor instructions' do
         push l 1 'a'
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 1, 'a' ], 'ret' => 'a' })
@@ -59,7 +59,7 @@ describe 'Flor instructions' do
         push l 1
       }
 
-      r = @executor.launch(rad, { 'l' => 0 }, {})
+      r = @executor.launch(rad, payload: { 'l' => 0 })
 
       expect(r['point']).to eq('failed')
       expect(r['error']['text']).to eq('target value is not an array')
@@ -72,7 +72,7 @@ describe 'Flor instructions' do
         push l
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })

@@ -23,7 +23,7 @@ describe 'Flor executions' do
         push l $(v.a)
       }
 
-      r = @executor.launch(rad, {}, { 'a' => 'A' })
+      r = @executor.launch(rad, variables: { 'a' => 'A' })
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')

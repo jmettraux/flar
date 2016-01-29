@@ -23,7 +23,7 @@ describe 'Flor instructions' do
         sequence
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({})
@@ -37,7 +37,7 @@ describe 'Flor instructions' do
           push l 1
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'l' => [ 0, 1 ], 'ret' => 1 })
@@ -51,7 +51,7 @@ describe 'Flor instructions' do
           2
       }
 
-      r = @executor.launch(rad, {}, {})
+      r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 2 })
