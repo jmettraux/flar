@@ -12,7 +12,12 @@ describe 'Flor instructions' do
 
   before :each do
 
-    @executor = Flor::TransientExecutor.new
+    @executor = Flor::ThreadedExecutor.new
+  end
+
+  after :each do
+
+    @executor.stop
   end
 
   describe 'wait' do
@@ -23,7 +28,13 @@ describe 'Flor instructions' do
         wait 2s
       }
 
-      r = @executor.launch(rad, nowait: true)
+      q = @executor.launch(rad, wait: :terminated)
+
+      t0 = Time.now
+
+      r = q.pop
+
+      t1 = Time.now
 
       expect(r['point']).to eq('terminated')
       expect(r['payload']).to eq({ 'ret' => 0 })
