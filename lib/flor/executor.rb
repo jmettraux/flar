@@ -72,6 +72,18 @@ module Flor
 
     protected
 
+    def make_launch_msg(tree, opts)
+
+      tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
+
+      { 'point' => 'execute',
+        'exid' => @execution['exid'],
+        'nid' => '0',
+        'tree' => tree,
+        'payload' => opts[:payload] || opts[:fields] || {},
+        'vars' => opts[:variables] || {} }
+    end
+
     def execute(message)
 
       nid = message['nid']
@@ -203,20 +215,7 @@ module Flor
 
     def launch(tree, opts={})
 
-      tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
-
-      messages = []
-
-      messages <<
-        { 'point' => 'execute',
-          'exid' => @execution['exid'],
-          'nid' => '0',
-          'tree' => tree,
-          'payload' => opts[:payload] || opts[:fields] || {},
-          'vars' => opts[:variables] || {} }
-
-      return nil if opts[:nowait]
-
+      messages = [ make_launch_msg(tree, opts) ]
       message = nil
 
       loop do
