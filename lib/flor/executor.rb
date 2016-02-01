@@ -309,11 +309,14 @@ module Flor
       def wait(point, timeout=3)
 
         start = Time.now
+        seen = 0
 
         loop do
           @mutex.synchronize do
-            msg = @seen.find { |m| @points.include?(m['point']) }
+            msg = @seen[0..-(seen + 1)]
+              .find { |m| @points.include?(m['point']) }
             return msg if msg
+            seen = @seen.length
           end
           break if Time.now > start + timeout
           sleep 0.32
