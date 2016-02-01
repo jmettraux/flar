@@ -28,11 +28,11 @@ describe 'Flor instructions' do
         wait 2s
       }
 
-      q = @executor.launch(rad, wait: :terminated)
+      w = @executor.launch(rad)
 
       t0 = Time.now
 
-      r = q.pop
+      r = w.wait('terminated')
 
       t1 = Time.now
 

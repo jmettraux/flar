@@ -32,6 +32,8 @@ class Flor::Ins::Wait < Flor::Instruction
 
     duration = attributes['_0']
     p duration
+
+    []
   end
 end
 
