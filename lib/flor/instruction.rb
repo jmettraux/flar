@@ -107,6 +107,21 @@ class Flor::Instruction
       reply('point' => 'execute', 'nid' => "#{nid}_#{i}", 'tree' => t)
     end
   end
+
+  def make_schedule_msg(type, time_string, nid, tree0, tree1, msg)
+
+    m = { 'type' => time_string }
+    if msg
+      m['point'] = 'schedule'
+      m['tree0'] = tree0
+      m['tree1'] = tree1
+      m['msg'] = msg
+    else
+      m['point'] = 'unschedule'
+    end
+
+    m
+  end
 end
 
 # class methods

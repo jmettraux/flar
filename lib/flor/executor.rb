@@ -172,6 +172,16 @@ module Flor
       puts "#{pt}#{ni}#{t}#{fr}"
     end
 
+    def schedule(message)
+
+      [] # transient implementation, no timers
+    end
+
+    def unschedule(message)
+
+      [] # transient implementation, no timers
+    end
+
     def generate_exid(domain)
 
       @exid_counter ||= 0
@@ -285,6 +295,18 @@ module Flor
       p err
       puts err.backtrace
       puts '-' * 80
+    end
+
+    def schedule(message)
+
+      p message
+
+      []
+    end
+
+    def unschedule(message)
+
+      fail NotImplementedError.new # TODO
     end
 
     class Waiter

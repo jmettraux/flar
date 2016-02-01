@@ -31,14 +31,21 @@ class Flor::Ins::Wait < Flor::Instruction
   def execute
 
     duration = attributes['_0']
-    p duration
 
-    []
+    m = {}
+    m['point'] = 'receive'
+    m['nid'] = @message['nid']
+    m['exid'] = @message['exid']
+    m['payload'] = Flor.dup(@message['payload'])
+
+    t0 = nil
+    t1 = nil
+
+    [ make_schedule_msg('at', duration, @message['nid'], t0, t1, m) ]
   end
 end
 
 __END__
-
 static char exe_wait(fdja_value *node, fdja_value *exe)
 {
   fdja_value *atts = attributes(node, exe);
