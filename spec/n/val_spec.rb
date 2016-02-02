@@ -20,15 +20,27 @@ describe 'Flor instructions' do
     it 'returns values on their own' do
 
       rad = %{
-        2
+        val 3
       }
 
       r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
-      #expect(r['exid']).to eq(exid)
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'ret' => 2 })
+      expect(r['payload']).to eq({ 'ret' => 3 })
+    end
+
+    it 'returns values on their own (arrays)' do
+
+      rad = %{
+        val [ 'a' b 3 ]
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'ret' => [ 'a', 'b', 3 ] })
     end
   end
 end
