@@ -172,16 +172,6 @@ module Flor
       puts "#{pt}#{ni}#{t}#{fr}"
     end
 
-    def schedule(message)
-
-      [] # transient implementation, no timers
-    end
-
-    def unschedule(message)
-
-      [] # transient implementation, no timers
-    end
-
     def generate_exid(domain)
 
       @exid_counter ||= 0
@@ -247,103 +237,6 @@ module Flor
       end
 
       message
-    end
-  end
-
-  class ThreadedExecutor < TransientExecutor
-
-    def launch(tree, opts={})
-
-      @messages  = [ make_launch_msg(tree, opts) ]
-
-      @waiter = Waiter.new
-
-      Thread.new { run }
-
-      @waiter
-    end
-
-    def stop
-
-      @messages << :stop
-    end
-
-    protected
-
-    def run
-
-      loop do
-
-        message = @messages.pop
-
-        break if message == nil
-        break if message == :stop
-
-        log(message)
-
-        point = @waiter.push(message)
-        break unless point
-
-        msgs = self.send(point.to_sym, message)
-
-        @messages.concat(msgs)
-      end
-
-    rescue => err
-
-      puts '-' * 80
-      p err
-      puts err.backtrace
-      puts '-' * 80
-    end
-
-    def schedule(message)
-
-      p message
-
-      []
-    end
-
-    def unschedule(message)
-
-      fail NotImplementedError.new # TODO
-    end
-
-    class Waiter
-
-      def initialize
-
-        @mutex = Mutex.new
-        @seen = []
-        @points = []
-      end
-
-      def push(msg)
-
-        @mutex.synchronize { @seen.unshift(msg) }
-
-        point = msg['point']
-
-        return nil if point == 'failed' || point == 'terminated'
-        point
-      end
-
-      def wait(point, timeout=3)
-
-        start = Time.now
-        seen = 0
-
-        loop do
-          @mutex.synchronize do
-            msg = @seen[0..-(seen + 1)]
-              .find { |m| @points.include?(m['point']) }
-            return msg if msg
-            seen = @seen.length
-          end
-          break if Time.now > start + timeout
-          sleep 0.32
-        end
-      end
     end
   end
 end
