@@ -26,6 +26,16 @@
 
 module Flor
 
+  class Lookup
+
+    def self.split(key)
+
+      m = key.match(/\A([lgd]?(?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+
+      m ? [ m[1], m[2] ] : [ 'f', key ]
+    end
+  end
+
   class FlorDollar < Flor::Dollar
 
     def initialize(execution, node, message)
@@ -44,11 +54,7 @@ module Flor
 
     def do_lookup(node, k)
 
-      prefix = 'f' # defaults to field
-
-      if m = k.match(/\A([lgd]?(?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
-        prefix, k = [ m[1], m[2] ]
-      end
+      prefix, k = Lookup.split(k)
 
       if prefix.index('v')
         node['vars'][k]
