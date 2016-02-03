@@ -217,6 +217,11 @@ describe Flor::Radial do
           ] ],
           __LINE__ ],
 
+        [
+          "set f.a: 1",
+          [ 'set', { 'f.a' => 1 }, 1, [] ],
+          __LINE__ ]
+
       ].each do |radial, tree, line|
         it(determine_title(radial, tree, line)) do
           expect(Flor::Radial.parse(radial)).to eq(tree)
