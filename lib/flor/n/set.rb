@@ -53,12 +53,5 @@ class Flor::Ins::Set < Flor::Instruction
 
     reply
   end
-
-  protected
-
-  def extract_prefix(key)
-
-    p key.split('.', 2)
-  end
 end
 
