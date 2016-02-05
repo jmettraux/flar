@@ -20,14 +20,16 @@ describe 'Flor instructions' do
     it 'has no effect on its own' do
 
       rad = %{
-        set
+        sequence
+          1
+          set
       }
 
       r = @executor.launch(rad)
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({})
+      expect(r['payload']).to eq({ 'ret' => 1 })
     end
 
     it 'sets a field' do
@@ -42,50 +44,23 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'a' => 1, 'ret' => 1 })
     end
+
+    it 'sets a field, by default' do
+
+      rad = %{
+        set a: 2
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'a' => 2, 'ret' => 2 })
+    end
   end
 end
 
 __END__
-  describe "set"
-  {
-    it "sets a field"
-    {
-      exid = flon_generate_exid("n.set.fld");
-
-      hlp_launch(
-        exid,
-        "set f.a: 1\n"
-        "",
-        "{ hello: set }");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_lj(result, "payload") ===F fdja_vj(""
-        "{ hello: set, ret: 1, a: 1 }"));
-    }
-
-    it "sets a field, by default"
-    {
-      exid = flon_generate_exid("n.set.fld.default");
-
-      hlp_launch(
-        exid,
-        "set a: 2\n"
-        "",
-        "{ hello: set }");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_lj(result, "payload") ===F fdja_vj(""
-        "{ hello: set, ret: 2, a: 2 }"));
-    }
-
     it "sets a field, via an expanded key"
     {
       exid = flon_generate_exid("n.set.fld.expankey");
