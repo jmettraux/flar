@@ -32,6 +32,21 @@ describe 'Flor instructions' do
       expect(r['payload']).to eq({ 'ret' => 1 })
     end
 
+    it 'sequences its children' do
+
+      rad = %{
+        set a
+          0
+          1
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'a' => 1, 'ret' => 1 })
+    end
+
     it 'sets a field' do
 
       rad = %{

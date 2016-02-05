@@ -37,7 +37,8 @@ class Flor::Ins::Set < Flor::Instruction
 
   def receive
 
-    return sequence_receive if @message['nid'] != nid
+    ms = sequence_receive
+    return ms if ms.first['point'] == 'execute'
 
     att0 = attributes['_0']
     pre, key = Flor::Lookup.split(att0)
