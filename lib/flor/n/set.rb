@@ -30,16 +30,20 @@ class Flor::Ins::Set < Flor::Instruction
 
   def execute
 
-    receive
+    node['rets'] = []
+
+    sequence_receive
   end
 
   def receive
+
+    return sequence_receive if @message['nid'] != nid
 
     att0 = attributes['_0']
     pre, key = Flor::Lookup.split(att0)
 
     att = attributes.find { |k, v| k != '_0' }
-    val = att ? att[1] : nil
+    val = payload['ret']
 
     if pre[0] == 'f'
       payload[key] = val
@@ -57,50 +61,4 @@ class Flor::Ins::Set < Flor::Instruction
     p key.split('.', 2)
   end
 end
-
-__END__
-static char rcv_set(fdja_value *node, fdja_value *rcv)
-{
-  fdja_value *att = fdja_at(fdja_at(tree(node, rcv), 1), 0);
-  expand(att, node, rcv);
-
-  char *satt = fdja_to_string(att);
-  char *key = satt;
-
-  if (*satt == 'd') goto _over;
-    // cannot set domain variables
-
-  char k = extract_prefix(key);
-  if (k != 0) key = strchr(key, '.') + 1;
-
-  fdja_value *val = fdja_lc(rcv, "payload.ret");
-
-  if (k == 'f' || k == 0)
-    fdja_pset(fdja_l(rcv, "payload"), key, val);
-  else if (k == 'v')
-    set_var(node, *satt, key, val);
-  else if (k == 'w')
-    set_war(node, key, val);
-
-_over:
-
-  free(satt);
-
-  return 'v';
-}
-
-static char exe_set(fdja_value *node, fdja_value *exe)
-{
-  if (child_count(node, exe) < 1) return 'v';
-
-  char *nid = fdja_ls(node, "nid", NULL);
-  char *next = flon_nid_child(nid, 0);
-
-  queue_child_execute(next, node, exe, NULL, NULL);
-
-  free(next);
-  free(nid);
-
-  return 'k';
-}
 
