@@ -17,6 +17,19 @@ describe 'Flor instructions' do
 
   describe 'set' do
 
+    it 'has no effect on its own' do
+
+      rad = %{
+        set
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({})
+    end
+
     it 'sets a field' do
 
       rad = %{
