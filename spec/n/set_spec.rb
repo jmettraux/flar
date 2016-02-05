@@ -72,29 +72,28 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'a' => 2, 'ret' => 2 })
     end
+
+    it 'splats arrays when setting'
+      #
+      # set a, b, c
+      #   [ 1, 2, 3 ]
+
+    it 'sets a field, via an expanded key' do
+
+      rad = %{
+        set $(k): 3
+      }
+
+      r = @executor.launch(rad, payload: { 'k' => 'number' })
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'k' => 'number', 'number' => 3, 'ret' => 3 })
+    end
   end
 end
 
 __END__
-    it "sets a field, via an expanded key"
-    {
-      exid = flon_generate_exid("n.set.fld.expankey");
-
-      hlp_launch(
-        exid,
-        "set $(k): 3\n"
-        "",
-        "{ k: number }");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_lj(result, "payload") ===F fdja_vj(""
-        "{ k: number, ret: 3, number: 3 }"));
-    }
-
     it "sets a variable"
     {
       exid = flon_generate_exid("n.set.var");
