@@ -26,16 +26,6 @@
 
 module Flor
 
-  class Lookup
-
-    def self.split(key)
-
-      m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
-
-      m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
-    end
-  end
-
   class FlorDollar < Flor::Dollar
 
     def initialize(execution, node, message)
@@ -50,11 +40,18 @@ module Flor
       do_lookup(@node, k)
     end
 
+    def self.split(key)
+
+      m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+
+      m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
+    end
+
     protected
 
     def do_lookup(node, k)
 
-      mod, cat, k = Lookup.split(k)
+      mod, cat, k = self.class.split(k)
 
       if cat == 'v'
         node['vars'][k]
@@ -114,7 +111,7 @@ module Flor
           'error' => { 'text' => "no instruction named '#{node['inst']}'" } }
       ] if kinst == nil
 
-      inst = kinst.new(@execution, message)
+      inst = kinst.new(@execution, node, message)
 
       inst.execute
     end
@@ -161,7 +158,7 @@ module Flor
       node = @execution['nodes'][nid]
 
       kinst = Flor::Instruction.lookup(node['inst'])
-      inst = kinst.new(@execution, message)
+      inst = kinst.new(@execution, node, message)
 
       inst.receive
     end

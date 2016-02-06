@@ -30,7 +30,7 @@ class Flor::Ins::Set < Flor::Instruction
 
   def execute
 
-    node['rets'] = []
+    @node['rets'] = []
 
     sequence_receive
   end
@@ -41,9 +41,8 @@ class Flor::Ins::Set < Flor::Instruction
     return ms if ms.first['point'] == 'execute'
 
     att0 = attributes['_0']
-    mod, cat, key = Flor::Lookup.split(att0)
+    mod, cat, key = Flor::FlorDollar.split(att0)
 
-    att = attributes.find { |k, v| k != '_0' }
     val = payload['ret']
 
     if cat == 'f'
@@ -59,19 +58,6 @@ class Flor::Ins::Set < Flor::Instruction
     reply
   end
 
-#static fdja_value *lookup_var_node(char mode, fdja_value *node)
-#{
-#  fdja_value *vars = fdja_l(node, "vars");
-#
-#  if (mode == 'l' && vars) return node;
-#
-#  fdja_value *par = parent(node);
-#
-#  if (vars && par == NULL && mode == 'g') return node;
-#  if (par) return lookup_var_node(mode, par);
-#
-#  return NULL;
-#}
   def lookup_var_node(mode, node)
 
     node['vars'] ? node : lookup_var_node(mode, parent_node)
@@ -80,11 +66,11 @@ class Flor::Ins::Set < Flor::Instruction
 
   def set_var(mode, key, val)
 
-    vnode = lookup_var_node(mode, node)
-    return unless vnode
+    node = lookup_var_node(mode, @node)
+    return unless node
 
-    vnode['vars'][key] = val
-    touch(vnode)
+    node['vars'][key] = val
+    touch(node)
   end
 end
 

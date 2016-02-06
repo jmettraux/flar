@@ -26,9 +26,10 @@
 
 class Flor::Instruction
 
-  def initialize(execution, message)
+  def initialize(execution, node, message)
 
     @execution = execution
+    @node = node
     @message = message
   end
 
@@ -44,10 +45,9 @@ class Flor::Instruction
   def exid; @message['exid']; end
   def nid; @message['nid']; end
   def from; @message['from']; end
-  def node; @execution['nodes'][nid]; end
   def attributes; tree[1]; end
   def payload; @message['payload']; end
-  def parent; node['parent']; end
+  def parent; @node['parent']; end
 
   def tree; lookup_tree(nid); end
   def parent_node; @execution['nodes'][parent]; end
@@ -103,7 +103,7 @@ class Flor::Instruction
     i = @message['point'] == 'execute' ? 0 : next_id(from)
     t = tree.last[i]
 
-    if i > 0 && rets = node['rets']
+    if i > 0 && rets = @node['rets']
       rets << Flor.dup(payload['ret'])
     end
 
