@@ -40,37 +40,9 @@ class Flor::Ins::Set < Flor::Instruction
     ms = sequence_receive
     return ms if ms.first['point'] == 'execute'
 
-    att0 = attributes['_0']
-    mod, cat, key = self.class.split(att0)
-
-    val = payload['ret']
-
-    if cat == 'f'
-      payload[key] = val
-    elsif cat == 'v'
-      set_var(mod, key, val)
-    elsif cat == 'w'
-      set_war(key, val)
-    else
-      return error_reply("don't know how to set #{att0}")
-    end
+    set_value(attributes['_0'], payload['ret'])
 
     reply
-  end
-
-  def lookup_var_node(mode, node)
-
-    node['vars'] ? node : lookup_var_node(mode, parent_node)
-      # TODO eventually make iterative
-  end
-
-  def set_var(mode, key, val)
-
-    node = lookup_var_node(mode, @node)
-    return unless node
-
-    node['vars'][key] = val
-    touch(node)
   end
 end
 

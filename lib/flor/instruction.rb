@@ -134,40 +134,42 @@ end
 #
 class Flor::Instruction
 
-  def self.split(key)
+  def key_split(key) # => mode, category, key
 
     m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
 
     m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
   end
 
+  def set_value(k, v)
+
+    mod, cat, key = key_split(k)
+
+    case cat[0]
+      when 'f' then payload[k] = v
+      when 'v' then @node['vars'][k] = v
+      else fail("don't know how to set #{k.inspect}")
+    end
+
+    v
+  end
+
+  def get_value(k)
+
+    mod, cat, key = key_split(k)
+
+    case cat[0]
+      when 'f' then payload[key]
+      when 'v' then @node['vars'][key]
+      else fail("don't know how to get #{k.inspect}")
+    end
+  end
+
   class Expander < Flor::Dollar
 
-    def initialize(inst)
+    def initialize(i); @instruction = i; end
 
-      @execution, @node, @message =
-        inst.instance_eval { [ @execution, @node, @message ] }
-    end
-
-    def lookup(k)
-
-      do_lookup(@node, k)
-    end
-
-    protected
-
-    def do_lookup(node, k)
-
-      mod, cat, k = Flor::Instruction.split(k)
-
-      if cat == 'v'
-        node['vars'][k]
-      elsif cat == 'w'
-        nil
-      else # field
-        @message['payload'][k]
-      end
-    end
+    def lookup(k); @instruction.get_value(k); end
   end
 
   def expand(s)
