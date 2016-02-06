@@ -50,6 +50,7 @@ class Flor::Instruction
   def parent; node['parent']; end
 
   def tree; lookup_tree(nid); end
+  def parent_node; @execution['nodes'][parent]; end
 
   def lookup_tree(nid)
 
@@ -65,6 +66,11 @@ class Flor::Instruction
     id = id.to_i
 
     tree.last[id]
+  end
+
+  def touch(node)
+
+    node['mtime'] = Flor.tstamp
   end
 
   def reply(h={})

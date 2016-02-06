@@ -30,9 +30,9 @@ module Flor
 
     def self.split(key)
 
-      m = key.match(/\A([lgd]?(?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+      m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
 
-      m ? [ m[1], m[2] ] : [ 'f', key ]
+      m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
     end
   end
 
@@ -54,11 +54,11 @@ module Flor
 
     def do_lookup(node, k)
 
-      prefix, k = Lookup.split(k)
+      mod, cat, k = Lookup.split(k)
 
-      if prefix.index('v')
+      if cat == 'v'
         node['vars'][k]
-      elsif prefix == 'w'
+      elsif cat == 'w'
         nil
       else # field
         @message['payload'][k]
@@ -142,7 +142,7 @@ module Flor
       tree1 = [ *expand(tree0[0, 2], dol), *tree0[2..-1] ]
       tree1 = rewrite(node, message, tree1)
 
-      # TODO beware always reduplicationg the tree children
+      # TODO beware always reduplicating the tree children
       # TODO should be OK, the rewrite_ methods return a new tree as soon
       #      as they rewrite
 

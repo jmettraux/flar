@@ -90,31 +90,26 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'k' => 'number', 'number' => 3, 'ret' => 3 })
     end
+
+    it 'sets a variable' do
+
+      rad = %{
+        sequence
+          set v.a: 3
+          push l $(v.a)
+      }
+
+      r = @executor.launch(rad, payload: {})
+      p r
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })
+    end
   end
 end
 
 __END__
-    it "sets a variable"
-    {
-      exid = flon_generate_exid("n.set.var");
-
-      hlp_launch(
-        exid,
-        "sequence\n"
-        "  set v.a: 3\n"
-        "  trace $(v.a)\n"
-        "",
-        "{}");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_ld(result, "payload") ===f ""
-        "{ ret: 3, trace: [ 3 ] }");
-    }
-
     it "sets variables at various levels"
     {
       exid = flon_generate_exid("n.set.var.levels");
