@@ -130,6 +130,52 @@ class Flor::Instruction
   end
 end
 
+# #expand and co
+#
+class Flor::Instruction
+
+  def self.split(key)
+
+    m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+
+    m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
+  end
+
+  class Expander < Flor::Dollar
+
+    def initialize(inst)
+
+      @execution, @node, @message =
+        inst.instance_eval { [ @execution, @node, @message ] }
+    end
+
+    def lookup(k)
+
+      do_lookup(@node, k)
+    end
+
+    protected
+
+    def do_lookup(node, k)
+
+      mod, cat, k = Flor::Instruction.split(k)
+
+      if cat == 'v'
+        node['vars'][k]
+      elsif cat == 'w'
+        nil
+      else # field
+        @message['payload'][k]
+      end
+    end
+  end
+
+  def expand(s)
+
+    s.index('$') ? Expander.new(self).expand(s) : s
+  end
+end
+
 # class methods
 #
 class Flor::Instruction
@@ -148,5 +194,7 @@ class Flor::Instruction
   end
 end
 
+# A namespace for instruction implementations
+#
 module Flor::Ins; end
 

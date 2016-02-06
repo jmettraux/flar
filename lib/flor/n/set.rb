@@ -41,7 +41,7 @@ class Flor::Ins::Set < Flor::Instruction
     return ms if ms.first['point'] == 'execute'
 
     att0 = attributes['_0']
-    mod, cat, key = Flor::FlorDollar.split(att0)
+    mod, cat, key = self.class.split(att0)
 
     val = payload['ret']
 

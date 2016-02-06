@@ -26,43 +26,6 @@
 
 module Flor
 
-  class FlorDollar < Flor::Dollar
-
-    def initialize(execution, node, message)
-
-      @execution = execution
-      @node = node
-      @message = message
-    end
-
-    def lookup(k)
-
-      do_lookup(@node, k)
-    end
-
-    def self.split(key)
-
-      m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
-
-      m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
-    end
-
-    protected
-
-    def do_lookup(node, k)
-
-      mod, cat, k = self.class.split(k)
-
-      if cat == 'v'
-        node['vars'][k]
-      elsif cat == 'w'
-        nil
-      else # field
-        @message['payload'][k]
-      end
-    end
-  end
-
   class Executor
 
     attr_reader :execution
@@ -116,15 +79,16 @@ module Flor
       inst.execute
     end
 
-    def expand(o, dol)
+    def expand(o, expander)
 
       case o
         when Array
-          o.collect { |e| expand(e, dol) }
+          o.collect { |e| expand(e, expander) }
         when Hash
-          o.inject({}) { |h, (k, v)| h[expand(k, dol)] = expand(v, dol); h }
+          o.inject({}) { |h, (k, v)|
+            h[expand(k, expander)] = expand(v, expander); h }
         when String
-          dol.expand(o)
+          expander.expand(o)
         else
           o
       end
@@ -134,9 +98,9 @@ module Flor
 
       tree0 = message['tree']
 
-      dol = FlorDollar.new(@execution, node, message)
+      expander = Flor::Instruction.new(@execution, node, message)
 
-      tree1 = [ *expand(tree0[0, 2], dol), *tree0[2..-1] ]
+      tree1 = [ *expand(tree0[0, 2], expander), *tree0[2..-1] ]
       tree1 = rewrite(node, message, tree1)
 
       # TODO beware always reduplicating the tree children
