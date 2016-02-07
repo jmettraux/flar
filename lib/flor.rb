@@ -60,9 +60,43 @@ module Flor
     t.strftime('%Y%m%d.%H%M%S.') + sprintf('%06d', t.usec)
   end
 
+  def self.to_index(s)
+
+    return 0 if s == 'first'
+    return -1 if s == 'last'
+
+    i = s.to_i
+    i.to_s == s ? i : nil
+  end
+
   def self.deep_get(o, k) # --> success(boolean), value
 
-    [ o.has_key?(k), o[k] ]
+    v = o
+    ks = k.split('.')
+
+    loop do
+
+      break unless kk = ks.shift
+
+      if v.is_a?(Array)
+
+        if i = to_index(kk)
+          v = v[i]
+        else
+          v = nil; break
+        end
+
+      elsif v.is_a?(Hash)
+
+        v = v[kk]
+
+      else
+
+        v = nil; break
+      end
+    end
+
+    [ ks.empty?, ks.empty? ? v : nil ]
   end
 
   def self.deep_set(o, k, v) # --> success(boolean)
