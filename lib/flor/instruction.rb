@@ -166,7 +166,9 @@ class Flor::Instruction
   def key_split(key) # => mode, category, key
 
     m = key.match(/\A(?:([lgd]?)((?:v|var|variable)|w|f|fld|field)\.)?(.+)\z/)
-    fail ArgumentError.new("couldn't split key #{key.inspect}") unless m
+
+    #fail ArgumentError.new("couldn't split key #{key.inspect}") unless m
+      # spare that
 
     ca = (m[2] || 'f')[0, 1]
     mo = m[1]; mo = 'l' if ca == 'v' && mo == ''
