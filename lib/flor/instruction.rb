@@ -141,19 +141,6 @@ end
 #
 class Flor::Instruction
 
-#static fdja_value *lookup_var_node(char mode, fdja_value *node)
-#{
-#  fdja_value *vars = fdja_l(node, "vars");
-#
-#  if (mode == 'l' && vars) return node;
-#
-#  fdja_value *par = parent(node);
-#
-#  if (vars && par == NULL && mode == 'g') return node;
-#  if (par) return lookup_var_node(mode, par);
-#
-#  return NULL;
-#}
   def lookup_var_node(mode, node)
 
     vars = node['vars']
@@ -202,17 +189,13 @@ class Flor::Instruction
     v
   end
 
-  def get_var(mode, node, key)
+  def get_var(mode, key)
 
-# TODO use mode
-    return nil unless node
-
-    vars = node['vars']
-
-    return get_var(mode, parent_node(node), key) \
-      unless vars && vars.has_key?(key)
-
-    node['vars'][key]
+    if node = lookup_var_node(mode, @node)
+      node['vars'][key]
+    else
+      nil
+    end
   end
 
   def get_value(k)
@@ -221,7 +204,7 @@ class Flor::Instruction
 
     case cat[0]
       when 'f' then Flor.deep_get(payload, key)
-      when 'v' then get_var(mod, @node, key)
+      when 'v' then get_var(mod, key)
       else fail("don't know how to get #{k.inspect}")
     end
   end
