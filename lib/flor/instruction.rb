@@ -152,14 +152,23 @@ class Flor::Instruction
     m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
   end
 
+  def set_var(mode, k, v)
+
+    if node = lookup_var_node(mode, @node)
+      node['vars'][k] = v
+    else
+      fail IndexError.new("couldn't set \"#{mode}#{k}\"")
+    end
+  end
+
   def set_value(k, v)
 
     mod, cat, key = key_split(k)
 
     case cat[0]
-      when 'f' then payload[key] = v
-      when 'v' then lookup_var_node(mod, @node)['vars'][key] = v
-      else fail("don't know how to set #{k.inspect}")
+      when 'f' then Flor.deep_set(payload, key, v)
+      when 'v' then set_var(mod, key, v)
+      else fail IndexError.new("don't know how to set #{k.inspect}")
     end
 
     v
