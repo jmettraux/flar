@@ -105,35 +105,29 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })
     end
+
+    it 'sets variables at various levels' do
+
+      rad = %{
+        sequence
+          set v.a: 0
+          push l '$(v.a) $(lv.a) $(gv.a)'
+          sequence vars: {}
+            set v.a: 1, lv.a: 2, gv.a: 3
+            push l '$(v.a) $(lv.a) $(gv.a)'
+          push l '$(v.a) $(lv.a) $(gv.a)'
+      }
+
+      r = @executor.launch(rad, payload: {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']['l']).to eq([ '0 0 0', '2 2 3', '3 3 3' ])
+    end
   end
 end
 
 __END__
-    it "sets variables at various levels"
-    {
-      exid = flon_generate_exid("n.set.var.levels");
-
-      hlp_launch(
-        exid,
-        "sequence\n"
-        "  set v.a: 0\n"
-        "  trace '$(v.a) $(lv.a) $(gv.a)'\n"
-        "  sequence vars: {}\n"
-        "    set v.a: 1, lv.a: 2, gv.a: 3\n"
-        "    trace '$(v.a) $(lv.a) $(gv.a)'\n"
-        "  trace '$(v.a) $(lv.a) $(gv.a)'\n"
-        "",
-        "{}");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_ld(result, "payload") ===f ""
-        "{ ret: 3, trace: [ \"0 0 0\", \"2 2 3\", \"3 3 3\" ] }");
-    }
-
     it "evaluate a single child and use its ret as set value"
     {
       exid = flon_generate_exid("n.set.child");
