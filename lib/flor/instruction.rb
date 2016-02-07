@@ -158,7 +158,7 @@ class Flor::Instruction
 
     case cat[0]
       when 'f' then payload[key] = v
-      when 'v' then lookup_var_node(mod, @node)[key] = v
+      when 'v' then lookup_var_node(mod, @node)['vars'][key] = v
       else fail("don't know how to set #{k.inspect}")
     end
 
@@ -177,9 +177,13 @@ class Flor::Instruction
     node['vars'][key]
   end
 
+  def lookup_value(start, keys)
+  end
+
   def get_value(k)
 
     mod, cat, key = key_split(k)
+p [ mod, cat, key ]
 
     case cat[0]
       when 'f' then payload[key]

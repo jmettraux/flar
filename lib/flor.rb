@@ -62,12 +62,14 @@ module Flor
 
   def self.deep_get(o, k) # --> success(boolean), value
 
-    nil
+    [ o.has_key?(k), o[k] ]
   end
 
   def self.deep_set(o, k, v) # --> success(boolean)
 
-    nil
+    o[k] = v
+
+    true
   end
 end
 
