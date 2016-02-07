@@ -159,8 +159,6 @@ module Flor
       k = do_eval(t[1])
       ks = PipeParser.parse(k)
 
-      #lookup(k)
-
       result = nil
       mode = :lookup # vs :call
 
@@ -185,10 +183,9 @@ module Flor
 
       return s unless s.index('$')
 
-      #p s
-      #p Parser.parse(s, rewrite: false, all: true, prune: false)
-      #Parser.parse(s, rewrite: false)
       t = Parser.parse(s)
+      t = t.first if t.size == 1
+
       do_eval(t)
     end
   end

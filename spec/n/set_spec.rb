@@ -100,7 +100,6 @@ describe 'Flor instructions' do
       }
 
       r = @executor.launch(rad, payload: {})
-      p r
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
