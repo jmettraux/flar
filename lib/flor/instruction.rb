@@ -26,6 +26,9 @@
 
 class Flor::Instruction
 
+  COMMON_ATTRIBUTES = %w[ vars ]
+    # TODO add timeout, tags and co
+
   def initialize(execution, node, message)
 
     @execution = execution
@@ -201,6 +204,7 @@ class Flor::Instruction
 
   def get_var(mode, node, key)
 
+# TODO use mode
     return nil unless node
 
     vars = node['vars']

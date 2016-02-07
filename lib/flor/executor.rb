@@ -61,9 +61,16 @@ module Flor
         'parent' => message['from'],
         'ctime' => now,
         'mtime' => now }
-      if vs = message['vars']; node['vars'] = vs; end
+
+      if vs = message['vars']
+        node['vars'] = vs
+      end
+      if vs = message['tree'][1]['vars']
+        node['vars'] = (node['vars'] || {}).merge(vs) if vs.is_a?(Hash)
+      end
 
       @execution['nodes'][nid] = node
+
 
       rewrite_tree(node, message)
 
