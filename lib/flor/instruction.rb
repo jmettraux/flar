@@ -177,16 +177,12 @@ class Flor::Instruction
     node['vars'][key]
   end
 
-  def lookup_value(start, keys)
-  end
-
   def get_value(k)
 
     mod, cat, key = key_split(k)
-p [ mod, cat, key ]
 
     case cat[0]
-      when 'f' then payload[key]
+      when 'f' then Flor.deep_get(payload, key)
       when 'v' then get_var(mod, @node, key)
       else fail("don't know how to get #{k.inspect}")
     end

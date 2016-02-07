@@ -66,7 +66,9 @@ module Flor
     return -1 if s == 'last'
 
     i = s.to_i
-    i.to_s == s ? i : nil
+    fail ::IndexError.new("#{s.inspect} is not an array index") if i.to_s != s
+
+    i
   end
 
   def self.deep_get(o, k) # --> success(boolean), value
@@ -78,25 +80,14 @@ module Flor
 
       break unless kk = ks.shift
 
-      if v.is_a?(Array)
-
-        if i = to_index(kk)
-          v = v[i]
-        else
-          v = nil; break
-        end
-
-      elsif v.is_a?(Hash)
-
-        v = v[kk]
-
-      else
-
-        v = nil; break
+      case v
+        when Array then v = v[to_index(kk)]
+        when Hash then v = v[kk]
+        else fail ::IndexError.new("#{kk.inspect} not found")
       end
     end
 
-    [ ks.empty?, ks.empty? ? v : nil ]
+    v
   end
 
   def self.deep_set(o, k, v) # --> success(boolean)

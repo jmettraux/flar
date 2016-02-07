@@ -22,27 +22,32 @@ describe Flor do
   describe '.deep_get' do
 
     [
+      [ :cars, 'simca', nil ],
+      [ :cars, 'alpha', { 'id' => 'FR1' } ],
+      [ :cars, 'alpha.id', 'FR1' ],
 
-      [ :cars, 'simca', true, nil ],
-      [ :cars, 'alpha', true, { 'id' => 'FR1' } ],
-      [ :cars, 'alpha.id', true, 'FR1' ],
+      [ :cars, 'bentley.1', 'spur' ],
+      [ :cars, 'bentley.other', IndexError ],
+      [ :cars, 'bentley.other.nada', IndexError ],
 
-      [ :cars, 'bentley.1', true, 'spur' ],
-      [ :cars, 'bentley.other', true, nil ],
-      [ :cars, 'bentley.other.nada', false, nil ],
+      [ :ranking, '0', 'Anh' ],
+      [ :ranking, '1', 'Bob' ],
+      [ :ranking, '-1', 'Charly' ],
+      [ :ranking, '-2', 'Bob' ],
+      [ :ranking, 'first', 'Anh' ],
+      [ :ranking, 'last', 'Charly' ],
 
-      [ :ranking, '0', true, 'Anh' ],
-      [ :ranking, '1', true, 'Bob' ],
-      [ :ranking, '-1', true, 'Charly' ],
-      [ :ranking, '-2', true, 'Bob' ],
-      [ :ranking, 'first', true, 'Anh' ],
-      [ :ranking, 'last', true, 'Charly' ],
-
-    ].each do |o, k, b, v|
+    ].each do |o, k, v|
 
       it "gets #{k.inspect}" do
+
         o = self.instance_eval("@#{o}")
-        expect(Flor.deep_get(o, k)).to eq([ b, v ])
+
+        if v.is_a?(Class)
+          expect { Flor.deep_get(o, k) }.to raise_error(v)
+        else
+          expect(Flor.deep_get(o, k)).to eq(v)
+        end
       end
     end
   end
