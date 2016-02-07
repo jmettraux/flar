@@ -138,18 +138,41 @@ end
 #
 class Flor::Instruction
 
+#static fdja_value *lookup_var_node(char mode, fdja_value *node)
+#{
+#  fdja_value *vars = fdja_l(node, "vars");
+#
+#  if (mode == 'l' && vars) return node;
+#
+#  fdja_value *par = parent(node);
+#
+#  if (vars && par == NULL && mode == 'g') return node;
+#  if (par) return lookup_var_node(mode, par);
+#
+#  return NULL;
+#}
   def lookup_var_node(mode, node)
 
-    return nil unless node
+    vars = node['vars']
+    return node if mode == 'l' && vars
 
-    node['vars'] ? node : lookup_var_node(mode, parent_node(node))
+    par = parent_node(node)
+    return node if vars && par == nil && mode == 'g'
+    return lookup_var_node(mode, par) if par
+
+    nil
   end
 
   def key_split(key) # => mode, category, key
 
-    m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
+    m = key.match(/\A(?:([lgd]?)((?:v|var|variable)|w|f|fld|field)\.)?(.+)\z/)
+    fail ArgumentError.new("couldn't split key #{key.inspect}") unless m
 
-    m ? [ m[1], m[2][0, 1], m[3] ] : [ nil, 'f', key ]
+    ca = (m[2] || 'f')[0, 1]
+    mo = m[1]; mo = 'l' if ca == 'v' && mo == ''
+    ke = m[3]
+
+    [ mo, ca, ke ]
   end
 
   def set_var(mode, k, v)
