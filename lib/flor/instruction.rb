@@ -50,7 +50,11 @@ class Flor::Instruction
   def parent; @node['parent']; end
 
   def tree; lookup_tree(nid); end
-  def parent_node; @execution['nodes'][parent]; end
+
+  def parent_node(node=@node)
+
+    @execution['nodes'][node['parent']]
+  end
 
   def lookup_tree(nid)
 
@@ -134,6 +138,13 @@ end
 #
 class Flor::Instruction
 
+  def lookup_var_node(mode, node)
+
+    return nil unless node
+
+    node['vars'] ? node : lookup_var_node(mode, parent_node(node))
+  end
+
   def key_split(key) # => mode, category, key
 
     m = key.match(/\A([lgd]?)((?:v|var|variable)|w|f|fld|field)\.(.+)\z/)
@@ -146,12 +157,24 @@ class Flor::Instruction
     mod, cat, key = key_split(k)
 
     case cat[0]
-      when 'f' then payload[k] = v
-      when 'v' then @node['vars'][k] = v
+      when 'f' then payload[key] = v
+      when 'v' then lookup_var_node(mod, @node)[key] = v
       else fail("don't know how to set #{k.inspect}")
     end
 
     v
+  end
+
+  def get_var(mode, node, key)
+
+    return nil unless node
+
+    vars = node['vars']
+
+    return get_var(mode, parent_node(node), key) \
+      unless vars && vars.has_key?(key)
+
+    node['vars'][key]
   end
 
   def get_value(k)
@@ -160,7 +183,7 @@ class Flor::Instruction
 
     case cat[0]
       when 'f' then payload[key]
-      when 'v' then @node['vars'][key]
+      when 'v' then get_var(mod, @node, key)
       else fail("don't know how to get #{k.inspect}")
     end
   end
