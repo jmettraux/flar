@@ -79,6 +79,7 @@ describe 'Flor instructions' do
     end
 
     it 'pushes the result of its children'
+    it 'pushes to multiple arrays'
   end
 end
 
