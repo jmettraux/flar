@@ -36,7 +36,6 @@ module Flor
 end
 
 require 'flor/dollar'
-require 'flor/helpers'
 require 'flor/parsers'
 
 require 'flor/instruction'
@@ -47,4 +46,28 @@ end
 
 require 'flor/executor'
 require 'flor/x/rewrite'
+
+
+module Flor
+
+  def self.dup(o)
+
+    Marshal.load(Marshal.dump(o))
+  end
+
+  def self.tstamp(t=Time.now.utc)
+
+    t.strftime('%Y%m%d.%H%M%S.') + sprintf('%06d', t.usec)
+  end
+
+  def self.deep_get(o, k) # --> success(boolean), value
+
+    nil
+  end
+
+  def self.deep_set(o, k, v) # --> success(boolean)
+
+    nil
+  end
+end
 
