@@ -124,32 +124,26 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']['l']).to eq([ '0 0 0', '2 2 3', '3 3 3' ])
     end
+
+    it 'evaluate a single child and use its ret as set value' do
+
+      rad = %{
+        sequence
+          set v.a
+            + 1 2 3
+          push l $(v.a)
+      }
+
+      r = @executor.launch(rad, payload: {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'l' => [ 6 ], 'ret' => 6 })
+    end
   end
 end
 
 __END__
-    it "evaluate a single child and use its ret as set value"
-    {
-      exid = flon_generate_exid("n.set.child");
-
-      hlp_launch(
-        exid,
-        "sequence\n"
-        "  set v.a\n"
-        "    + 1 2 3\n"
-        "  trace $(v.a)\n"
-        "",
-        "{}");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_ld(result, "payload") ===f ""
-        "{ ret: 6, trace: [ 6 ] }");
-    }
-
     it "sets wars"
     {
       exid = flon_generate_exid("n.set.wars");
