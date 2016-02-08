@@ -40,15 +40,19 @@ module Flor
 
     def make_launch_msg(tree, opts)
 
-      tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
+      t = tree.is_a?(String) ? Flor::Radial.parse(tree, opts[:fname], opts) : t
 
-      fail ArgumentError.new("radial parse failure") unless tree
-        # TODO re-parse and indicate what went wrong...
+      unless t
+        #h = opts.merge(prune: false, rewrite: false)
+        #p Flor::Radial.parse(tree, h[:fname], h)
+          # TODO re-parse and indicate what went wrong...
+        fail ArgumentError.new('radial parse failure')
+      end
 
       { 'point' => 'execute',
         'exid' => @execution['exid'],
         'nid' => '0',
-        'tree' => tree,
+        'tree' => t,
         'payload' => opts[:payload] || opts[:fields] || {},
         'vars' => opts[:variables] || {} }
     end
