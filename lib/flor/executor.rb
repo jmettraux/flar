@@ -42,6 +42,9 @@ module Flor
 
       tree = tree.is_a?(String) ? Flor::Radial.parse(tree) : tree
 
+      fail ArgumentError.new("radial parse failure") unless tree
+        # TODO re-parse and indicate what went wrong...
+
       { 'point' => 'execute',
         'exid' => @execution['exid'],
         'nid' => '0',
