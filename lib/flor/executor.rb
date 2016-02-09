@@ -82,18 +82,13 @@ module Flor
 
       kinst = Flor::Instruction.lookup(node['inst'])
 
-      return [
-        { 'point' => 'failed',
-          'error' => { 'text' => "no instruction named '#{node['inst']}'" } }
-      ] if kinst == nil
+      return error_reply(
+        node, message, "no instruction named '#{node['inst']}'"
+      ) if kinst == nil
 
       inst = kinst.new(@execution, node, message)
 
-      begin
-        inst.execute
-      rescue => err
-        inst.error_reply(err)
-      end
+      inst.execute
     end
 
     def expand(o, expander)
@@ -141,11 +136,7 @@ module Flor
       kinst = Flor::Instruction.lookup(node['inst'])
       inst = kinst.new(@execution, node, message)
 
-      begin
-        inst.receive
-      rescue => err
-        inst.error_reply(err)
-      end
+      inst.receive
     end
 
     def log(m)
@@ -187,6 +178,24 @@ module Flor
 
       "#{domain}-#{uid}-#{t}.#{sus}"
     end
+
+    def error_reply(message, o)
+
+      m = { 'point' => 'failed' }
+      m['exid'] = message['exid']
+      m['nid'] = message['nid']
+      m['from'] = message['from']
+      m['payload'] = message['payload']
+
+      m['error'] =
+        if o.respond_to?(:message)
+          { 'msg' => o.message, 'kla' => o.class.to_s }
+        else
+          { 'msg' => o.to_s }
+        end
+
+      [ m ]
+    end
   end
 
   class TransientExecutor < Executor
@@ -219,7 +228,12 @@ module Flor
         break if point == 'failed'
         break if point == 'terminated'
 
-        msgs = self.send(point.to_sym, message)
+        msgs =
+          begin
+            self.send(point.to_sym, message)
+          rescue => e
+            error_reply(message, e)
+          end
 
         messages.concat(msgs)
       end

@@ -43,18 +43,6 @@ class Flor::Instruction
     ]
   end
 
-  def error_reply(o)
-
-    err =
-      if o.respond_to?(:message)
-        { 'msg' => o.message, 'kla' => o.class.to_s }
-      else
-        { 'msg' => o.to_s }
-      end
-
-    reply('point' => 'failed', 'error' => err)
-  end
-
   protected
 
   def exid; @message['exid']; end
@@ -103,6 +91,18 @@ class Flor::Instruction
     m.merge!(h)
 
     [ m ]
+  end
+
+  def error_reply(o)
+
+    err =
+      if o.respond_to?(:message)
+        { 'msg' => o.message, 'kla' => o.class.to_s }
+      else
+        { 'msg' => o.to_s }
+      end
+
+    reply('point' => 'failed', 'error' => err)
   end
 
   def next_id(nid)
