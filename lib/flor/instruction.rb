@@ -176,6 +176,15 @@ class Flor::Instruction
     end
   end
 
+  def set_war(k, v)
+
+    par = parent_node(@node)
+    return unless par
+
+    (par['wars'] ||= {})[k] = v
+    touch(par)
+  end
+
   def set_value(k, v)
 
     mod, cat, key = key_split(k)
@@ -183,19 +192,28 @@ class Flor::Instruction
     case cat[0]
       when 'f' then Flor.deep_set(payload, key, v)
       when 'v' then set_var(mod, key, v)
+      when 'w' then set_war(key, v)
       else fail IndexError.new("don't know how to set #{k.inspect}")
     end
 
     v
   end
 
-  def get_var(mode, key)
+  def get_var(mode, k)
 
     if node = lookup_var_node(mode, @node)
-      node['vars'][key]
+      node['vars'][k]
     else
       nil
     end
+  end
+
+  def get_war(k)
+
+    par = parent_node(@node)
+    return unless par
+
+    (par['wars'] || {})[k]
   end
 
   def get_value(k)
@@ -205,6 +223,7 @@ class Flor::Instruction
     case cat[0]
       when 'f' then Flor.deep_get(payload, key)
       when 'v' then get_var(mod, key)
+      when 'w' then get_war(key)
       else fail("don't know how to get #{k.inspect}")
     end
   end

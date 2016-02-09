@@ -140,32 +140,26 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'l' => [ 6 ], 'ret' => 6 })
     end
+
+    it 'sets wars' do
+
+      rad = %{
+        sequence
+          set w.a
+            + 1 2
+          push l $(w.a)
+      }
+
+      r = @executor.launch(rad, payload: {})
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })
+    end
   end
 end
 
 __END__
-    it "sets wars"
-    {
-      exid = flon_generate_exid("n.set.wars");
-
-      hlp_launch(
-        exid,
-        "sequence\n"
-        "  set w.a\n"
-        "    + 1 2\n"
-        "  trace $(w.a)\n"
-        "",
-        "{}");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_ld(result, "payload") ===f ""
-        "{ ret: 3, trace: [ 3 ] }");
-    }
-
     it "cannot set domain vars"
     {
       exid = flon_generate_exid("n.test.set.cannot");
