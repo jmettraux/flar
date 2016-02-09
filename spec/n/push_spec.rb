@@ -62,7 +62,7 @@ describe 'Flor instructions' do
       r = @executor.launch(rad, payload: { 'l' => 0 })
 
       expect(r['point']).to eq('failed')
-      expect(r['error']['text']).to eq('target value is not an array')
+      expect(r['error']['msg']).to eq('target value is not an array')
     end
 
     it 'pushes $(ret) when no attributes' do

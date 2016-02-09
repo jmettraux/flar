@@ -43,6 +43,18 @@ class Flor::Instruction
     ]
   end
 
+  def error_reply(o)
+
+    err =
+      if o.respond_to?(:message)
+        { 'msg' => o.message, 'kla' => o.class.to_s }
+      else
+        { 'msg' => o.to_s }
+      end
+
+    reply('point' => 'failed', 'error' => err)
+  end
+
   protected
 
   def exid; @message['exid']; end
@@ -91,13 +103,6 @@ class Flor::Instruction
     m.merge!(h)
 
     [ m ]
-  end
-
-  def error_reply(text)
-
-    # TODO log into execution
-
-    reply('point' => 'failed', 'error' => { 'text' => text })
   end
 
   def next_id(nid)
@@ -169,10 +174,12 @@ class Flor::Instruction
 
   def set_var(mode, k, v)
 
+    fail IndexError.new("cannot set domain variables") if mode == 'd'
+
     if node = lookup_var_node(mode, @node)
       node['vars'][k] = v
     else
-      fail IndexError.new("couldn't set \"#{mode}#{k}\"")
+      fail IndexError.new("couldn't set var \"#{mode}v.#{k}\"")
     end
   end
 

@@ -78,7 +78,6 @@ module Flor
 
       @execution['nodes'][nid] = node
 
-
       rewrite_tree(node, message)
 
       kinst = Flor::Instruction.lookup(node['inst'])
@@ -90,7 +89,11 @@ module Flor
 
       inst = kinst.new(@execution, node, message)
 
-      inst.execute
+      begin
+        inst.execute
+      rescue => err
+        inst.error_reply(err)
+      end
     end
 
     def expand(o, expander)
@@ -138,7 +141,11 @@ module Flor
       kinst = Flor::Instruction.lookup(node['inst'])
       inst = kinst.new(@execution, node, message)
 
-      inst.receive
+      begin
+        inst.receive
+      rescue => err
+        inst.error_reply(err)
+      end
     end
 
     def log(m)

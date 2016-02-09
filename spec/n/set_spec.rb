@@ -156,29 +156,41 @@ describe 'Flor instructions' do
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'l' => [ 3 ], 'ret' => 3 })
     end
+
+    it 'fails upon attempting to set a domain variable' do
+
+      rad = %{
+        set dv.a
+          1
+      }
+
+      r = @executor.launch(rad, payload: {})
+
+      expect(r['point']).to eq(
+        'failed')
+      expect(r['error']).to eq(
+        { 'msg' => 'cannot set domain variables', 'kla' => 'IndexError' })
+    end
+#    it "cannot set domain vars"
+#    {
+#      exid = flon_generate_exid("n.test.set.cannot");
+#
+#      hlp_launch(
+#        exid,
+#        "sequence\n"
+#        "  trace $(v.city)\n"
+#        "  set d.city: Brussels\n"
+#        "  trace $(v.city)\n"
+#        "",
+#        "{}");
+#
+#      result = hlp_wait(exid, "terminated", NULL, 3);
+#
+#      expect(result != NULL);
+#      //flu_putf(fdja_todc(result));
+#
+#      expect(fdja_ld(result, "payload") ===f ""
+#        "{ trace: [ Birmingham, Birmingham ], ret: Brussels }");
+#    }
   end
 end
-
-__END__
-    it "cannot set domain vars"
-    {
-      exid = flon_generate_exid("n.test.set.cannot");
-
-      hlp_launch(
-        exid,
-        "sequence\n"
-        "  trace $(v.city)\n"
-        "  set d.city: Brussels\n"
-        "  trace $(v.city)\n"
-        "",
-        "{}");
-
-      result = hlp_wait(exid, "terminated", NULL, 3);
-
-      expect(result != NULL);
-      //flu_putf(fdja_todc(result));
-
-      expect(fdja_ld(result, "payload") ===f ""
-        "{ trace: [ Birmingham, Birmingham ], ret: Brussels }");
-    }
-  }
