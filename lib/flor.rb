@@ -96,5 +96,14 @@ module Flor
 
     true
   end
+
+  def self.to_error(o)
+
+    if o.respond_to?(:message)
+      { 'msg' => o.message, 'kla' => o.class.to_s }
+    else
+      { 'msg' => o.to_s }
+    end
+  end
 end
 

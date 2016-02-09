@@ -95,14 +95,7 @@ class Flor::Instruction
 
   def error_reply(o)
 
-    err =
-      if o.respond_to?(:message)
-        { 'msg' => o.message, 'kla' => o.class.to_s }
-      else
-        { 'msg' => o.to_s }
-      end
-
-    reply('point' => 'failed', 'error' => err)
+    reply('point' => 'failed', 'error' => Flor.to_error(o))
   end
 
   def next_id(nid)

@@ -186,13 +186,7 @@ module Flor
       m['nid'] = message['nid']
       m['from'] = message['from']
       m['payload'] = message['payload']
-
-      m['error'] =
-        if o.respond_to?(:message)
-          { 'msg' => o.message, 'kla' => o.class.to_s }
-        else
-          { 'msg' => o.to_s }
-        end
+      m['error'] = Flor.to_error(o)
 
       [ m ]
     end
