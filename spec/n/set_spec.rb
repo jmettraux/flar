@@ -73,11 +73,6 @@ describe 'Flor instructions' do
       expect(r['payload']).to eq({ 'a' => 2, 'ret' => 2 })
     end
 
-    it 'splats arrays when setting'
-      #
-      # set a, b, c
-      #   [ 1, 2, 3 ]
-
     it 'sets a field, via an expanded key' do
 
       rad = %{
@@ -171,26 +166,43 @@ describe 'Flor instructions' do
       expect(r['error']).to eq(
         { 'msg' => 'cannot set domain variables', 'kla' => 'IndexError' })
     end
-#    it "cannot set domain vars"
-#    {
-#      exid = flon_generate_exid("n.test.set.cannot");
-#
-#      hlp_launch(
-#        exid,
-#        "sequence\n"
-#        "  trace $(v.city)\n"
-#        "  set d.city: Brussels\n"
-#        "  trace $(v.city)\n"
-#        "",
-#        "{}");
-#
-#      result = hlp_wait(exid, "terminated", NULL, 3);
-#
-#      expect(result != NULL);
-#      //flu_putf(fdja_todc(result));
-#
-#      expect(fdja_ld(result, "payload") ===f ""
-#        "{ trace: [ Birmingham, Birmingham ], ret: Brussels }");
-#    }
+
+    context 'splat' do
+
+      it 'does not splat when there is only one target' do
+
+        rad = %{
+          set a
+            [ 1, 2 ]
+        }
+
+        r = @executor.launch(rad, payload: {})
+
+        expect(r['point']).to eq('terminated')
+        expect(r['from']).to eq('0')
+        expect(r['payload']).to eq({ 'a' => [ 1, 2 ], 'ret' => [ 1, 2 ] })
+      end
+
+      it 'does a, b = [ 3, 4 ]' do
+
+        rad = %{
+          set a, b
+            [ 3, 4 ]
+        }
+
+        r = @executor.launch(rad, payload: {})
+
+        expect(r['point']).to eq('terminated')
+        expect(r['from']).to eq('0')
+        expect(r['payload']).to eq({ 'a' => 3, 'b' => 4, 'ret' => [ 3, 4 ] })
+      end
+
+      it 'does a, b = [ 3, 4, 5 ]'
+      it 'does a, *b = [ 3, 4, 5 ]'
+      it 'does a, *b, c = [ 3, 4, 5, 6 ]'
+
+      it "discards '_'"
+    end
   end
 end
+

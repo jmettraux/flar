@@ -40,7 +40,14 @@ class Flor::Ins::Set < Flor::Instruction
     ms = sequence_receive
     return ms if ms.first['point'] == 'execute'
 
-    set_value(attributes['_0'], payload['ret'])
+    val = payload['ret']
+    uks = unkeyed_values(true)
+
+    if val.is_a?(Array) && uks.size > 1
+      uks.each_with_index { |k, i| set_value(k, val[i]) }
+    else
+      set_value(uks.first, val)
+    end
 
     reply
   end

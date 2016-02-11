@@ -59,6 +59,21 @@ class Flor::Instruction
     @execution['nodes'][node['parent']]
   end
 
+  def unkeyed_values(from_zero)
+
+    if from_zero
+      (0..attributes.length - 1)
+        .inject([]) { |a, i|
+          k = "_#{i}"; a << attributes[k] if attributes.has_key?(k); a
+        }
+    else
+      attributes
+        .inject([]) { |a, (k, v)|
+          a << v if k.match(/\A_\d+\Z/); a
+        }
+    end
+  end
+
   def lookup_tree(nid)
 
     node = @execution['nodes'][nid]
