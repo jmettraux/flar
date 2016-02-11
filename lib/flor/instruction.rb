@@ -202,6 +202,8 @@ class Flor::Instruction
 
   def set_value(k, v)
 
+    return if k == '_'
+
     mod, cat, key = key_split(k)
 
     case cat[0]

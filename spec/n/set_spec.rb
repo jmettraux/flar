@@ -211,10 +211,53 @@ describe 'Flor instructions' do
         expect(r['payload']).to eq({ 'a' => 0, 'b' => 1, 'ret' => [ 0, 1, 2 ] })
       end
 
-      it 'does a, *b = [ 3, 4, 5 ]'
-      it 'does a, *b, c = [ 3, 4, 5, 6 ]'
+      it 'does a, *b = [ 3, 4, 5 ]' do
 
-      it "discards '_'"
+        rad = %{
+          set a, *b
+            [ 3, 4, 5 ]
+        }
+
+        r = @executor.launch(rad, payload: {})
+
+        expect(r['point']).to eq('terminated')
+        expect(r['from']).to eq('0')
+
+        expect(r['payload']).to eq({
+          'a' => 3, 'b' => [ 4, 5 ], 'ret' => [ 3, 4, 5 ] })
+      end
+
+      it 'does a, *b, c = [ 3, 4, 5, 6 ]' do
+
+        rad = %{
+          set a, *b, c
+            [ 3, 4, 5, 6 ]
+        }
+
+        r = @executor.launch(rad, payload: {})
+
+        expect(r['point']).to eq('terminated')
+        expect(r['from']).to eq('0')
+
+        expect(r['payload']).to eq({
+          'a' => 3, 'b' => [ 4, 5 ], 'c' => 6, 'ret' => [ 3, 4, 5, 6 ] })
+      end
+
+      it "discards '_'" do
+
+        rad = %{
+          set a, _, b
+            [ 3, 4, 5 ]
+        }
+
+        r = @executor.launch(rad, payload: {})
+
+        expect(r['point']).to eq('terminated')
+        expect(r['from']).to eq('0')
+
+        expect(r['payload']).to eq({
+          'a' => 3, 'b' => 5, 'ret' => [ 3, 4, 5 ] })
+      end
     end
   end
 end
