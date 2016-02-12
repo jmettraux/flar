@@ -126,9 +126,13 @@ module Flor
     def receive(message)
 
       nid = message['nid']
+      from = message['from']
+
+      fnode = @execution['nodes'].delete(from) || {}
+        # TODO eventually: don't remove if it's a closure
 
       return [
-        message.merge('point' => 'terminated')
+        message.merge('point' => 'terminated', 'vars' => fnode['vars'])
       ] if nid == nil
 
       node = @execution['nodes'][nid]
