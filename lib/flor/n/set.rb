@@ -44,12 +44,29 @@ class Flor::Ins::Set < Flor::Instruction
     uks = unkeyed_values(true)
 
     if val.is_a?(Array) && uks.size > 1
-      uks.each_with_index { |k, i| set_value(k, val[i]) }
+      splat(uks, val)
     else
       set_value(uks.first, val)
     end
 
     reply
+  end
+
+  protected
+
+  def splat(ks, vs)
+
+    ks.inject(0) { |off, k|
+      if k[0, 1] == '*'
+        #p({ off: off, k: k, ks: ks[off + 1..-1], vs: vs[off..-1] })
+        l = vs.length - ks.length + 1
+        set_value(k[1..-1], vs[off, l])
+        off + l
+      else
+        set_value(k, vs[off])
+        off + 1
+      end
+    }
   end
 end
 
