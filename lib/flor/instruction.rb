@@ -181,10 +181,11 @@ class Flor::Instruction
     #fail ArgumentError.new("couldn't split key #{key.inspect}") unless m
       # spare that
 
-    ca = (m[2] || 'f')[0, 1]
-    mo = m[1]; mo = 'l' if ca == 'v' && mo == ''
+    ca = (m[2] || 'v')[0, 1]
+    mo = m[1]; mo = 'l' if ca == 'v' && (mo == nil || mo == '')
     ke = m[3]
 
+    #p [ key, '-->', mo, ca, ke ]
     [ mo, ca, ke ]
   end
 

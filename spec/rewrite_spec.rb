@@ -237,7 +237,7 @@ describe Flor::Executor do
 
         executor, node, message =
           RewriteExecutor.prepare(%{
-            $(cmp) x y
+            $(f.cmp) x y
           },
           payload: { 'cmp' => '>' })
 
@@ -257,7 +257,7 @@ describe Flor::Executor do
 
         executor, node, message =
           RewriteExecutor.prepare(%{
-            x $(cmp) y
+            x $(f.cmp) y
           },
           payload: { 'cmp' => '>' })
 

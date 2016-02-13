@@ -35,7 +35,7 @@ describe 'Flor instructions' do
     it 'sequences its children' do
 
       rad = %{
-        set a
+        set f.a
           0
           1
       }
@@ -60,7 +60,7 @@ describe 'Flor instructions' do
       expect(r['payload']).to eq({ 'a' => 1, 'ret' => 1 })
     end
 
-    it 'sets a field, by default' do
+    it 'sets a var, by default' do
 
       rad = %{
         set a: 2
@@ -70,20 +70,23 @@ describe 'Flor instructions' do
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'a' => 2, 'ret' => 2 })
+      expect(r['payload']).to eq({ 'ret' => 2 })
+      expect(r['vars']).to eq({ 'a' => 2 })
     end
 
     it 'sets a field, via an expanded key' do
 
       rad = %{
-        set $(k): 3
+        set $(f.k): 3
       }
 
-      r = @executor.launch(rad, payload: { 'k' => 'number' })
+      r = @executor.launch(rad, payload: { 'k' => 'f.number' })
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'k' => 'number', 'number' => 3, 'ret' => 3 })
+
+      expect(r['payload']).to eq({
+        'k' => 'f.number', 'number' => 3, 'ret' => 3 })
     end
 
     it 'sets a variable' do
@@ -181,7 +184,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-        expect(r['payload']).to eq({ 'a' => [ 1, 2 ], 'ret' => [ 1, 2 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 1, 2 ] })
+        expect(r['vars']).to eq({ 'a' => [ 1, 2 ] })
       end
 
       it 'does a, b = [ 3, 4 ]' do
@@ -195,7 +199,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-        expect(r['payload']).to eq({ 'a' => 3, 'b' => 4, 'ret' => [ 3, 4 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 3, 4 ] })
+        expect(r['vars']).to eq({ 'a' => 3, 'b' => 4 })
       end
 
       it 'does a, b = [ 3, 4, 5 ]' do
@@ -209,7 +214,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-        expect(r['payload']).to eq({ 'a' => 0, 'b' => 1, 'ret' => [ 0, 1, 2 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 0, 1, 2 ] })
+        expect(r['vars']).to eq({ 'a' => 0, 'b' => 1 })
       end
 
       it 'does a, *b = [ 3, 4, 5 ]' do
@@ -223,9 +229,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-
-        expect(r['payload']).to eq({
-          'a' => 3, 'b' => [ 4, 5 ], 'ret' => [ 3, 4, 5 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 3, 4, 5 ] })
+        expect(r['vars']).to eq({ 'a' => 3, 'b' => [ 4, 5 ] })
       end
 
       it 'does a, *b, c = [ 3, 4, 5, 6 ]' do
@@ -239,9 +244,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-
-        expect(r['payload']).to eq({
-          'a' => 3, 'b' => [ 4, 5 ], 'c' => 6, 'ret' => [ 3, 4, 5, 6 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 3, 4, 5, 6 ] })
+        expect(r['vars']).to eq({ 'a' => 3, 'b' => [ 4, 5 ], 'c' => 6 })
       end
 
       it "discards '_'" do
@@ -255,9 +259,8 @@ describe 'Flor instructions' do
 
         expect(r['point']).to eq('terminated')
         expect(r['from']).to eq('0')
-
-        expect(r['payload']).to eq({
-          'a' => 3, 'b' => 5, 'ret' => [ 3, 4, 5 ] })
+        expect(r['payload']).to eq({ 'ret' => [ 3, 4, 5 ] })
+        expect(r['vars']).to eq({ 'a' => 3, 'b' => 5 })
       end
     end
   end

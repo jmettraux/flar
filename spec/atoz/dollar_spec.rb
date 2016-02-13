@@ -20,7 +20,7 @@ describe 'Flor executions' do
     it 'expands $(stuff) when executed' do
 
       rad = %{
-        push l $(a)
+        push l $(f.a)
       }
 
       r = @executor.launch(rad, payload: { 'a' => 'A' })
@@ -38,7 +38,7 @@ describe 'Flor executions' do
       rad = %{
         sequence
           set v.a: { x: 0, y: 1 }
-          push l $(stuff.msg)
+          push l $(f.stuff.msg)
           push l $(v.a)
       }
 
