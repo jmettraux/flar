@@ -29,18 +29,28 @@ class Flor::Instruction
   COMMON_ATTRIBUTES = %w[ vars ]
     # TODO add timeout, tags and co
 
-  def initialize(execution, node, message)
+  def initialize(execution, node, message, expander=false)
 
     @execution = execution
     @node = node
     @message = message
+
+    node['tree'] = message['tree'] if expander == false && tree == nil
   end
 
   def receive
 
     [
-      { 'point' => 'receive', 'payload' => payload, 'nid' => parent }
+      { 'point' => 'receive',
+        'payload' => payload,
+        'nid' => parent,
+        'from' => @message['nid'] }
     ]
+  end
+
+  def tree
+
+    @node['tree'] || lookup_tree(nid)
   end
 
   protected
@@ -51,8 +61,6 @@ class Flor::Instruction
   def attributes; tree[1]; end
   def payload; @message['payload']; end
   def parent; @node['parent']; end
-
-  def tree; lookup_tree(nid); end
 
   def parent_node(node=@node)
 
@@ -77,6 +85,12 @@ class Flor::Instruction
   def lookup_tree(nid)
 
     node = @execution['nodes'][nid]
+if node == nil
+  puts "???"
+  p nid
+  p @execution['nodes'].keys
+  puts "???."
+end
 
     tree = node['tree']
     return tree if tree

@@ -110,7 +110,7 @@ module Flor
 
       tree0 = message['tree']
 
-      expander = Flor::Instruction.new(@execution, node, message)
+      expander = Flor::Instruction.new(@execution, node, message, true)
 
       tree1 = [ *expand(tree0[0, 2], expander), *tree0[2..-1] ]
       tree1 = rewrite(node, message, tree1)
@@ -145,14 +145,17 @@ module Flor
 
     def log(m)
 
-      return unless @options[:debug]
+      return unless @options[:debug] || ENV['FLOR_DEBUG'].match(/log/)
 
       pt = m['point'][0, 3]
       ni = m['nid'] ? " #{m['nid']}" : ''
       fr = m['from'] ? " from #{m['from']}" : ''
       t = m['tree'] ? ' ' + m['tree'][0..-2].inspect : ''
+      ind = '  ' * (ni.split('_').size - 1)
 
-      puts "#{pt}#{ni}#{t}#{fr}"
+      #puts "[1;33m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # yellow
+      #puts "[0;37m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # light gray
+      puts "[1;30m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # dark gray
     end
 
     def generate_exid(domain)
@@ -188,6 +191,7 @@ module Flor
       # TODO: use node (which may be nil)
 
       m = { 'point' => 'failed' }
+      m['fpoint'] = message['point']
       m['exid'] = message['exid']
       m['nid'] = message['nid']
       m['from'] = message['from']
