@@ -163,8 +163,9 @@ describe 'Flor instructions' do
 
       expect(r['point']).to eq(
         'failed')
-      expect(r['error']).to eq(
-        { 'msg' => 'cannot set domain variables', 'kla' => 'IndexError' })
+      expect(r['error']['msg']).to eq('cannot set domain variables')
+      expect(r['error']['kla']).to eq('IndexError')
+      expect(r['error']['trc'].class).to eq(Array)
     end
 
     context 'splat' do

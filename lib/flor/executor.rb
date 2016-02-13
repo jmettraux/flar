@@ -183,13 +183,16 @@ module Flor
       "#{domain}-#{uid}-#{t}.#{sus}"
     end
 
-    def error_reply(message, o)
+    def error_reply(node, message, o)
+
+      # TODO: use node (which may be nil)
 
       m = { 'point' => 'failed' }
       m['exid'] = message['exid']
       m['nid'] = message['nid']
       m['from'] = message['from']
       m['payload'] = message['payload']
+      m['tree'] = message['tree']
       m['error'] = Flor.to_error(o)
 
       [ m ]
@@ -230,7 +233,7 @@ module Flor
           begin
             self.send(point.to_sym, message)
           rescue => e
-            error_reply(message, e)
+            error_reply(nil, message, e)
           end
 
         messages.concat(msgs)

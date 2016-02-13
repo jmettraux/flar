@@ -100,7 +100,9 @@ module Flor
   def self.to_error(o)
 
     if o.respond_to?(:message)
-      { 'msg' => o.message, 'kla' => o.class.to_s }
+      { 'msg' => o.message,
+        'kla' => o.class.to_s,
+        'trc' => o.backtrace[0, 7] }
     else
       { 'msg' => o.to_s }
     end
