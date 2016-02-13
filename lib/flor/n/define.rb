@@ -30,21 +30,22 @@ class Flor::Ins::Define < Flor::Instruction
 
   def execute
 
-    vnode = lookup_var_node('l', @node)
+    tr = tree
 
-    t = [ 'sequence', { 'vars' => {} }, tree[2], Flor.dup(tree[3]) ]
-    if tl = tree[4]; t << tl; end
+    sig = [ tr[0], tr[1] ]
+
+    t = [ 'sequence', { 'vars' => {} }, tr[2], Flor.dup(tr[3]) ]
+    if tl = tr[4]; t << tl; end
+
+    vnid = lookup_var_node('l', @node)['nid']
 
     val = {
-      'type' => 'function',
+      'signature' => sig,
       'tree' => t,
       'exid' => exid,
-      'vnid' => vnode['nid']
-    }
+      'vnid' => vnid }
 
-    set_var('l', tree[1]['_0'].to_s, val) \
-      if tree[0] == 'define' && tree[1]['_0']
-
+    set_var('l', tr[1]['_0'].to_s, val) if tr[0] == 'define' && tr[1]['_0']
     payload['ret'] = val
 
     reply
