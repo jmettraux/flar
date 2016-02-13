@@ -32,7 +32,7 @@ describe 'Flor instructions' do
       fun = r['vars']['sum']
 
       expect(fun['type']).to eq('function')
-      expect(fun['tree'][0]).to eq('define')
+      expect(fun['tree'][0]).to eq('sequence')
       expect(fun['exid']).to match(/\Aeval-u0-/)
       expect(fun['vnid']).to eq('0')
     end
@@ -55,7 +55,7 @@ describe 'Flor instructions' do
       fun = r['payload']['ret']
 
       expect(fun['type']).to eq('function')
-      expect(fun['tree'][0]).to eq('def')
+      expect(fun['tree'][0]).to eq('sequence')
       expect(fun['exid']).to match(/\Aeval-u0-/)
       expect(fun['vnid']).to eq('0')
     end

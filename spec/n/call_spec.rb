@@ -28,11 +28,10 @@ describe 'Flor instructions' do
       }
 
       r = @executor.launch(rad)
-pp r
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
-      expect(r['payload']).to eq({ 'ret' => 1 })
+      expect(r['payload']).to eq({ 'l' => [ 1, 1 ], 'ret' => 1 })
     end
   end
 end

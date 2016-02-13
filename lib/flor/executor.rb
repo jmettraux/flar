@@ -145,13 +145,13 @@ module Flor
 
     def log(m)
 
-      return unless @options[:debug] || ENV['FLOR_DEBUG'].match(/log/)
+      return unless @options[:debug] || (ENV['FLOR_DEBUG'] || '').match(/log/)
 
       pt = m['point'][0, 3]
       ni = m['nid'] ? " #{m['nid']}" : ''
       fr = m['from'] ? " from #{m['from']}" : ''
       t = m['tree'] ? ' ' + m['tree'][0..-2].inspect : ''
-      ind = '  ' * (ni.split('_').size - 1)
+      ind = '  ' * ni.split('_').size
 
       #puts "[1;33m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # yellow
       #puts "[0;37m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # light gray
