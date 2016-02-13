@@ -35,17 +35,32 @@ class Flor::Ins::Call < Flor::Instruction
 
     return error_reply("no function named #{fna.inspect}") unless fun
 
-    []
-#    cargs =
-#      fun['signature'][0] == 'define' ?
-#      attributes.reject { |k, v| k == '_0' } :
-#      attributes
-#
-#    reply(
-#      'point' => 'execute',
-#      'nid' => "#{nid}_0",
-#      'tree' => fun['tree'],
-#      'vars' => vars)
+
+    named = fun['signature'][0] == 'define'
+
+    sargs = fun['signature'][1].reject { |k, v| named && k == '_0' }
+    cargs = attributes.reject { |k, v| k == '_0' }.to_a
+
+    vars = {}
+
+    cargs.each do |cak, cav|
+
+      if cak.match(/\A_\d+\z/)
+        sa = sargs[cak]
+        _, sam, sak = key_split(sa)
+        (sam == 'v' ? vars : payload)[sak] = cav
+      else
+        puts "-" * 70
+        p cak
+        puts ("-" * 70) + '.'
+      end
+    end
+
+    reply(
+      'point' => 'execute',
+      'nid' => "#{nid}_0",
+      'tree' => fun['tree'],
+      'vars' => vars)
   end
 end
 

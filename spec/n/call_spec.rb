@@ -50,13 +50,12 @@ describe 'Flor instructions' do
 
       rad = %{
         sequence
-          define sum v.a, v.b
-            + a b
+          define sum a, b
+            + $(a) $(b)
           call sum 1, 2
       }
 
       r = @executor.launch(rad)
-pp r
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
