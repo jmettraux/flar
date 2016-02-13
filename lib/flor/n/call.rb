@@ -30,9 +30,22 @@ class Flor::Ins::Call < Flor::Instruction
 
   def execute
 
-    fun = get_var('l', attributes['_0'])
+    fna = attributes['_0']
+    fun = get_value(fna)
 
-    reply('point' => 'execute', 'nid' => "#{nid}_0", 'tree' => fun['tree'])
+    return error_reply("no function named #{fna.inspect}") unless fun
+
+    []
+#    cargs =
+#      fun['signature'][0] == 'define' ?
+#      attributes.reject { |k, v| k == '_0' } :
+#      attributes
+#
+#    reply(
+#      'point' => 'execute',
+#      'nid' => "#{nid}_0",
+#      'tree' => fun['tree'],
+#      'vars' => vars)
   end
 end
 

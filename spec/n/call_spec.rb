@@ -17,6 +17,18 @@ describe 'Flor instructions' do
 
   describe 'call' do
 
+    it 'fails if the function is unknown' do
+
+      rad = %{
+        call nada
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('failed')
+      expect(r['error']['msg']).to eq('no function named "nada"')
+    end
+
     it 'calls a function' do
 
       rad = %{
@@ -32,6 +44,23 @@ describe 'Flor instructions' do
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')
       expect(r['payload']).to eq({ 'l' => [ 1, 1 ], 'ret' => 1 })
+    end
+
+    it 'calls a function with arguments' do
+
+      rad = %{
+        sequence
+          define sum v.a, v.b
+            + a b
+          call sum 1, 2
+      }
+
+      r = @executor.launch(rad)
+pp r
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'ret' => 3 })
     end
   end
 end

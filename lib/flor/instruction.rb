@@ -85,12 +85,6 @@ class Flor::Instruction
   def lookup_tree(nid)
 
     node = @execution['nodes'][nid]
-if node == nil
-  puts "???"
-  p nid
-  p @execution['nodes'].keys
-  puts "???."
-end
 
     tree = node['tree']
     return tree if tree
