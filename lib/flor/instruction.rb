@@ -263,7 +263,14 @@ class Flor::Instruction
 
   def expand(s)
 
-    s.index('$') ? Expander.new(self).expand(s) : s
+    return s if s[0, 1] == '_'
+    return s if s[0, 2] == 's_'
+
+    s1 = s[2..-1]
+    x = Expander.new(self)
+    v = x.expand("$(#{s1})") || x.expand(s1)
+
+    v == s1 ? s : "s_#{v}"
   end
 end
 

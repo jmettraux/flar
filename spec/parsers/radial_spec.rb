@@ -31,7 +31,7 @@ describe Flor::Radial do
       expect(
         Flor::Radial.parse('sequence timeout: 1d', 'var/lib/one.rad')
       ).to eq(
-        [ 'sequence', { 'timeout' => '1d' }, 1, [], 'var/lib/one.rad' ]
+        [ 'y_sequence', { 'y_timeout' => 'y_1d' }, 1, [], 'var/lib/one.rad' ]
       )
     end
 
@@ -42,12 +42,14 @@ describe Flor::Radial do
       [
         [ '12[3', nil, __LINE__ ],
 
-        [ 'sequence', [ 'sequence', {}, 1, [] ], __LINE__ ],
+        [ 'sequence',
+          [ 'y_sequence', {}, 1, [] ],
+          __LINE__ ],
 
         [ "sequence\n" +
           "  participant 'bravo'",
-          [ 'sequence', {}, 1, [
-            [ 'participant', { '_0' => 'bravo' }, 2, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_participant', { '_0' => 's_bravo' }, 2, [] ]
           ] ],
           __LINE__ ],
 
@@ -58,13 +60,13 @@ describe Flor::Radial do
           "    participant 'bravo'\n" +
           "    participant 'charly'\n" +
           "  participant 'delta'",
-          [ 'sequence', {}, 1, [
-            [ 'participant', { '_0' => 'alpha' }, 2, [] ],
-            [ 'concurrence', {}, 3, [
-              [ 'participant', { '_0' => 'bravo' }, 4, [] ],
-              [ 'participant', { '_0' => 'charly' }, 5, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_participant', { '_0' => 's_alpha' }, 2, [] ],
+            [ 'y_concurrence', {}, 3, [
+              [ 'y_participant', { '_0' => 's_bravo' }, 4, [] ],
+              [ 'y_participant', { '_0' => 's_charly' }, 5, [] ]
             ] ],
-            [ 'participant', { '_0' => 'delta' }, 6, [] ]
+            [ 'y_participant', { '_0' => 's_delta' }, 6, [] ]
           ] ],
           __LINE__ ],
 
@@ -72,16 +74,16 @@ describe Flor::Radial do
           "iterate [\n" +
           "  1 2 3 ]\n" +
           "  bravo",
-          [ 'iterate', { '_0' => [ 1, 2, 3 ] }, 1, [
-            [ 'bravo', {}, 3, [] ]
+          [ 'y_iterate', { '_0' => [ 1, 2, 3 ] }, 1, [
+            [ 'y_bravo', {}, 3, [] ]
           ] ],
           __LINE__ ],
 
         [
           "participant charly a: 0, b: one c: true, d: [ four ]",
-          [ 'participant', {
-            '_0' => 'charly',
-            'a' => 0, 'b' => 'one', 'c' => true, 'd' => [ 'four' ]
+          [ 'y_participant', {
+            '_0' => 'y_charly',
+            'y_a' => 0, 'y_b' => 'y_one', 'y_c' => true, 'y_d' => [ 'y_four' ]
           }, 1, [] ],
           __LINE__ ],
 
@@ -91,9 +93,9 @@ describe Flor::Radial do
           "  bb: one,\n" +
           "  cc: true,\n" +
           "  dd: [ four ]",
-          [ 'participant', {
-            '_0' => 'charly',
-            'aa' => 0, 'bb' => 'one', 'cc' => true, 'dd' => [ 'four' ]
+          [ 'y_participant', {
+            '_0' => 'y_charly',
+            'y_aa' => 0, 'y_bb' => 'y_one', 'y_cc' => true, 'y_dd' => [ 'y_four' ]
           }, 1, [] ],
           __LINE__ ],
 
@@ -103,9 +105,9 @@ describe Flor::Radial do
           "  bb: one, # one\n" +
           "  cc: true, # three\n" +
           "  dd: [ four ] # four",
-          [ 'participant', {
-            '_0' => 'charly',
-            'aa' => 0, 'bb' => 'one', 'cc' => true, 'dd' => [ 'four' ]
+          [ 'y_participant', {
+            '_0' => 'y_charly',
+            'y_aa' => 0, 'y_bb' => 'y_one', 'y_cc' => true, 'y_dd' => [ 'y_four' ]
           }, 1, [] ],
           __LINE__ ],
 
@@ -114,28 +116,28 @@ describe Flor::Radial do
           "  aa:     # zero\n" +
           "    0,    // zero indeed\n" +
           "  bb: one # one\n",
-          [ 'participant', {
-            '_0' => 'charly', 'aa' => 0, 'bb' => 'one'
+          [ 'y_participant', {
+            '_0' => 'y_charly', 'y_aa' => 0, 'y_bb' => 'y_one'
           }, 1, [] ],
           __LINE__ ],
 
         [
           "nada aa bb d: 2, e: 3",
-          [ 'nada', { '_0' => 'aa', '_1' => 'bb', 'd' => 2, 'e' => 3 }, 1, [] ],
+          [ 'y_nada', { '_0' => 'y_aa', '_1' => 'y_bb', 'y_d' => 2, 'y_e' => 3 }, 1, [] ],
           __LINE__ ],
 
         [
           "nada d: 0 e: 1 aa bb",
-          [ 'nada', { 'd' => 0, 'e' => 1, '_2' => 'aa', '_3' => 'bb' }, 1, [] ],
+          [ 'y_nada', { 'y_d' => 0, 'y_e' => 1, '_2' => 'y_aa', '_3' => 'y_bb' }, 1, [] ],
           __LINE__ ],
 
         [
           "sequence\n" +
-          "  participant toto # blind\n" +
-          "  participant tutu # deaf",
-          [ 'sequence', {}, 1, [
-            [ 'participant', { '_0' => 'toto' }, 2, [] ],
-            [ 'participant', { '_0' => 'tutu' }, 3, [] ]
+          "  participant toto # this\n" +
+          "  participant tutu # that",
+          [ 'y_sequence', {}, 1, [
+            [ 'y_participant', { '_0' => 'y_toto' }, 2, [] ],
+            [ 'y_participant', { '_0' => 'y_tutu' }, 3, [] ]
           ] ],
           __LINE__ ],
 
@@ -143,8 +145,8 @@ describe Flor::Radial do
           "# Tue Jul  8 05:50:28 JST 2014\n" +
           "sequence\n" +
           "  participant toto",
-          [ 'sequence', {}, 2, [
-            [ 'participant', { '_0' => 'toto' }, 3, [] ]
+          [ 'y_sequence', {}, 2, [
+            [ 'y_participant', { '_0' => 'y_toto' }, 3, [] ]
           ] ],
           __LINE__ ],
 
@@ -153,24 +155,24 @@ describe Flor::Radial do
           "  git://github.com/flon-io/tst x b: 0\n",
           #"  git://github.com/flon-io/tst x y a: 0, b: 1\n",
           #"  git://github.com/flon-io/tst a: 0, b: 1\n",
-          [ 'sequence', {}, 1, [
-            [ 'git://github.com/flon-io/tst', { '_0' => 'x', 'b' => 0 }, 2, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_git://github.com/flon-io/tst', { '_0' => 'y_x', 'y_b' => 0 }, 2, [] ]
           ] ],
           __LINE__ ],
 
         [
           "$(a)\n" +
           "  b $(c) $(d): e f: $(g) $(h)$(i)\n",
-          [ '$(a)', {}, 1, [
-            [ 'b', {
-              '_0' => '$(c)', '$(d)' => 'e', 'f' => '$(g)', '_3' => '$(h)$(i)'
+          [ 'y_$(a)', {}, 1, [
+            [ 'y_b', {
+              '_0' => 'y_$(c)', 'y_$(d)' => 'y_e', 'y_f' => 'y_$(g)', '_3' => 'y_$(h)$(i)'
             }, 2, [] ]
           ] ],
           __LINE__ ],
 
         [
           "invoke a b: c:y\n",
-          [ 'invoke', { '_0' => 'a', 'b' => 'c:y' }, 1, [] ],
+          [ 'y_invoke', { '_0' => 'y_a', 'y_b' => 'y_c:y' }, 1, [] ],
           __LINE__ ],
 
         [
@@ -183,15 +185,15 @@ describe Flor::Radial do
           "  / c d\n" +
           "  c * d\n" +
           "  c / d\n",
-          [ 'sequence', {}, 1, [
-            [ '+', { '_0' => 'a', '_1' => 'b' }, 2, [] ],
-            [ '-', { '_0' => 'a', '_1' => 'b' }, 3, [] ],
-            [ 'a', { '_0' => '+', '_1' => 'b' }, 4, [] ],
-            [ 'a', { '_0' => '-', '_1' => 'b' }, 5, [] ],
-            [ '*', { '_0' => 'c', '_1' => 'd' }, 6, [] ],
-            [ '/', { '_0' => 'c', '_1' => 'd' }, 7, [] ],
-            [ 'c', { '_0' => '*', '_1' => 'd' }, 8, [] ],
-            [ 'c', { '_0' => '/', '_1' => 'd' }, 9, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_+', { '_0' => 'y_a', '_1' => 'y_b' }, 2, [] ],
+            [ 'y_-', { '_0' => 'y_a', '_1' => 'y_b' }, 3, [] ],
+            [ 'y_a', { '_0' => 'y_+', '_1' => 'y_b' }, 4, [] ],
+            [ 'y_a', { '_0' => 'y_-', '_1' => 'y_b' }, 5, [] ],
+            [ 'y_*', { '_0' => 'y_c', '_1' => 'y_d' }, 6, [] ],
+            [ 'y_/', { '_0' => 'y_c', '_1' => 'y_d' }, 7, [] ],
+            [ 'y_c', { '_0' => 'y_*', '_1' => 'y_d' }, 8, [] ],
+            [ 'y_c', { '_0' => 'y_/', '_1' => 'y_d' }, 9, [] ]
           ] ],
           __LINE__ ],
 
@@ -199,9 +201,9 @@ describe Flor::Radial do
           "=~\n" +
           "  toto\n" +
           "  to$\n",
-          [ '=~', {}, 1, [
-            [ 'toto', {}, 2, [] ],
-            [ 'to$', {}, 3, [] ]
+          [ 'y_=~', {}, 1, [
+            [ 'y_toto', {}, 2, [] ],
+            [ 'y_to$', {}, 3, [] ]
           ] ],
           __LINE__ ],
 
@@ -210,19 +212,20 @@ describe Flor::Radial do
           "  3\n" +
           "  null\n" +
           "  quatre\n",
-          [ 'sequence', {}, 1, [
-            [ 'val', { '_0' => 3 }, 2, [] ],
-            [ 'val', { '_0' => nil }, 3, [] ],
-            [ 'quatre', {}, 4, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_val', { '_0' => 3 }, 2, [] ],
+            [ 'y_val', { '_0' => nil }, 3, [] ],
+            [ 'y_quatre', {}, 4, [] ]
           ] ],
           __LINE__ ],
 
         [
           "set f.a: 1",
-          [ 'set', { 'f.a' => 1 }, 1, [] ],
+          [ 'y_set', { 'y_f.a' => 1 }, 1, [] ],
           __LINE__ ]
 
       ].each do |radial, tree, line|
+
         it(determine_title(radial, tree, line)) do
           expect(Flor::Radial.parse(radial)).to eq(tree)
         end
@@ -234,17 +237,17 @@ describe Flor::Radial do
       [
         [
           "if (a > b)\n",
-          [ 'if', {
-            '_0' => [ 'a', { '_0' => '>', '_1' => 'b' }, 1, [] ]
+          [ 'y_if', {
+            '_0' => [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 1, [] ]
           }, 1, [] ],
           __LINE__ ],
 
         [
           "(a > 0) and (b > 1)\n",
           [
-            [ 'a', { '_0' => '>', '_1' => 0 }, 1, [] ],
-            { '_0' => 'and',
-              '_1' => [ 'b', { '_0' => '>', '_1' => 1 }, 1, [] ] },
+            [ 'y_a', { '_0' => 'y_>', '_1' => 0 }, 1, [] ],
+            { '_0' => 'y_and',
+              '_1' => [ 'y_b', { '_0' => 'y_>', '_1' => 1 }, 1, [] ] },
             1,
             []
           ],
@@ -252,47 +255,48 @@ describe Flor::Radial do
 
         [
           "if (a > $(b)$(c))\n",
-          [ 'if', {
-            '_0' => [ 'a', { '_0' => '>', '_1' => "$(b)$(c)" }, 1, [] ]
+          [ 'y_if', {
+            '_0' => [ 'y_a', { '_0' => 'y_>', '_1' => "y_$(b)$(c)" }, 1, [] ]
           }, 1, [] ],
           __LINE__ ],
 
         [
           "if ( # really?\n" +
           "  a > b)\n",
-          [ 'if', {
-            '_0' => [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
+          [ 'y_if', {
+            '_0' => [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ]
           }, 1, [] ],
           __LINE__ ],
 
         [
           "if ( // really?\n" +
           "   a > b)\n",
-          [ 'if', {
-            '_0' => [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
+          [ 'y_if', {
+            '_0' => [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ]
           }, 1, [] ],
           __LINE__ ],
 
         [
           "task Alan value: (1 + 2)",
-          [ 'task', {
-            '_0' => 'Alan',
-            'value' => [
-              [ 'val', { '_0'=>1 }, 1, [] ],
-              { '_0' => '+', '_1' => 2 }, 1, [] ]
+          [ 'y_task', {
+            '_0' => 'y_Alan',
+            'y_value' => [
+              [ 'y_val', { '_0'=>1 }, 1, [] ],
+              { '_0' => 'y_+', '_1' => 2 }, 1, [] ]
             }, 1, [] ],
           __LINE__ ],
 
         [
           "sub (1 + 2)",
-          [ 'sub', {
+          [ 'y_sub', {
             '_0' => [
-              [ 'val', { '_0' => 1 }, 1, [] ], { '_0' => '+', '_1' => 2 }, 1, []
+              [ 'y_val', { '_0' => 1 }, 1, [] ], { '_0' => 'y_+', '_1' => 2 }, 1, []
             ]
           }, 1, [] ],
           __LINE__ ]
 
       ].each do |radial, tree, line|
+
         it(determine_title(radial, tree, line)) do
           expect(Flor::Radial.parse(radial)).to eq(tree)
         end
@@ -305,20 +309,21 @@ describe Flor::Radial do
         [
           "sequence\n" +
           "  =~ ab /c d/\n",
-          [ 'sequence', {}, 1, [
-            [ '=~', { '_0' => 'ab', '_1' => /c d/ }, 2, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_=~', { '_0' => 'y_ab', '_1' => "r_/c d/" }, 2, [] ]
           ] ],
           __LINE__ ],
 
         [
           "sequence\n" +
           "  =~ ab /c, d/i\n",
-          [ 'sequence', {}, 1, [
-            [ '=~', { '_0' => 'ab', '_1' => /c, d/i }, 2, [] ]
+          [ 'y_sequence', {}, 1, [
+            [ 'y_=~', { '_0' => 'y_ab', '_1' => "r_/c, d/i" }, 2, [] ]
           ] ],
           __LINE__ ]
 
       ].each do |radial, tree, line|
+
         it(determine_title(radial, tree, line)) do
           expect(Flor::Radial.parse(radial)).to eq(tree)
         end

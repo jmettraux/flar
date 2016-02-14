@@ -119,7 +119,7 @@ module Flor
       # TODO should be OK, the rewrite_ methods return a new tree as soon
       #      as they rewrite
 
-      node['inst'] = tree1.first
+      node['inst'] = tree1.first[2..-1]
       node['tree'] = tree1 if node['nid'] == '0' || tree1 != tree0
     end
 

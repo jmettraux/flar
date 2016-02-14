@@ -64,7 +64,7 @@ module Flor
 
     def string(i)
 
-      rex(:string, i, %r{
+      rex(:dqstring, i, %r{
         "(
           \\["bfnrt] |
           \\u[0-9a-fA-F]{4} |
@@ -75,7 +75,7 @@ module Flor
 
     def sqstring(i)
 
-      rex(:string, i, %r{
+      rex(:sqstring, i, %r{
         '(
           \\['bfnrt] |
           \\u[0-9a-fA-F]{4} |
@@ -125,7 +125,8 @@ module Flor
       s.index('.') ? s.to_f : s.to_i
     end
 
-    def rewrite_string(t); Flor.unescape(t.string[1..-2]); end
+    def rewrite_sqstring(t); Flor.unescape(t.string[1..-2]); end
+    def rewrite_dqstring(t); Flor.unescape(t.string[1..-2]); end
     def rewrite_symbol(t); t.string; end
     def rewrite_symbolk(t); t.string; end
 
@@ -178,10 +179,11 @@ module Flor
 
     # rewriting
 
-    def rewrite_rxstring(t)
-
-      ::Kernel.eval(t.string) # :-(
-    end
+    def rewrite_sqstring(t); "s_#{Flor.unescape(t.string[1..-2])}"; end
+    def rewrite_dqstring(t); "d_#{Flor.unescape(t.string[1..-2])}"; end
+    def rewrite_symbol(t); "y_#{t.string}"; end
+    def rewrite_symbolk(t); "y_#{t.string}"; end
+    def rewrite_rxstring(t); "r_#{t.string}"; end
 
     def rewrite_rad_p(t)
 
@@ -212,13 +214,14 @@ module Flor
 
           vt = t.lookup(:rad_h).lookup(:rad_v).sublookup(nil)
 
-          nam = 'val'
+          nam = nil
           if vt.name == :symbol || vt.name == :string
-            nam = vt.string
+            #nam = vt.string
+            nam = Flor::Radial.rewrite(vt)
           elsif vt.name == :rad_p
             nam = Flor::Radial.rewrite(vt)
           else
-            nam = [ 'val', { '_0' => Flor::Radial.rewrite(vt) }, lin, [] ]
+            nam = [ 'y_val', { '_0' => Flor::Radial.rewrite(vt) }, lin, [] ]
           end
 
           t.lookup(:rad_g).c1.gather(:rad_e).each_with_index do |et, i|
@@ -236,7 +239,7 @@ module Flor
 
         else
 
-          @a = [ 'sequence', {}, 0 ]
+          @a = [ 's_sequence', {}, 0 ]
         end
       end
 
