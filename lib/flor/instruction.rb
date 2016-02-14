@@ -67,20 +67,45 @@ class Flor::Instruction
     @execution['nodes'][node['parent']]
   end
 
-  def unkeyed_values(from_zero)
+  def sattr(s)
 
-    if from_zero
-      (0..attributes.length - 1)
-        .inject([]) { |a, i|
-          k = "_#{i}"; a << attributes[k] if attributes.has_key?(k); a
-        }
-    else
-      attributes
-        .inject([]) { |a, (k, v)|
-          a << v if k.match(/\A_\d+\Z/); a
-        }
+    return s[2..-1] unless s[0, 2] == 'r_'
+
+    ss = s.split('/')
+    flags = 0
+    flags |= Regexp::EXTENDED if ss[2].index('x')
+    flags |= Regexp::IGNORECASE if ss[2].index('i')
+    flags |= Regexp::MULTILINE if ss[2].index('m')
+
+    Regexp.new(ss[1], flags)
+  end
+
+  def xattr(o)
+
+    case o
+      when Object then o.inject({}) { |h, (k, v)| h[xattr[k]] = xattr[v]; h }
+      when Array then o.collect { |e| xattr(e) }
+      when String then sattr(o)
+      else o
     end
   end
+
+  def xattributes; xattr(tree[1]); end
+
+  #def unkeyed_values(from_zero)
+  #
+  #  if from_zero
+  #    (0..attributes.length - 1)
+  #      .inject([]) { |a, i|
+  #        k = "_#{i}"; a << attributes[k] if attributes.has_key?(k); a
+  #      }
+  #  else
+  #    attributes
+  #      .inject([]) { |a, (k, v)|
+  #        a << v if k.match(/\A_\d+\Z/); a
+  #      }
+  #  end
+  #end
 
   def lookup_tree(nid)
 
