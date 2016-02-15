@@ -46,6 +46,23 @@ describe 'Flor instructions' do
       expect(r['payload']).to eq({ 'l' => [ 1, 1 ], 'ret' => 1 })
     end
 
+    it 'wraps the function body in a sequence' do
+
+      rad = %{
+        sequence
+          define push01
+            push l 0
+            push l 1
+          call push01
+      }
+
+      r = @executor.launch(rad)
+
+      expect(r['point']).to eq('terminated')
+      expect(r['from']).to eq('0')
+      expect(r['payload']).to eq({ 'l' => [ 0, 1 ], 'ret' => 1 })
+    end
+
     it 'calls a function with arguments' do
 
       rad = %{
