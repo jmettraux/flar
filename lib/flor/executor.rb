@@ -147,15 +147,19 @@ module Flor
 
       return unless @options[:debug] || (ENV['FLOR_DEBUG'] || '').match(/log/)
 
+      colo = "[1;30m" # dark grey
+
       pt = m['point'][0, 3]
       ni = m['nid'] ? " #{m['nid']}" : ''
       fr = m['from'] ? " from #{m['from']}" : ''
-      t = m['tree'] ? ' ' + m['tree'][0..-2].inspect : ''
+
+      t = m['tree'];
+      t0 = t ? " [[1;33m#{t[0][2..-1]}#{colo}" : '' # in yellow
+      t = t ? " #{t[1..-2].inspect[1..-2]}]" : ''
+
       ind = '  ' * ni.split('_').size
 
-      #puts "[1;33m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # yellow
-      #puts "[0;37m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # light gray
-      puts "[1;30m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # dark gray
+      puts "#{colo}#{ind}#{pt}#{ni}#{t0}#{t}#{fr} [0;0m"
     end
 
     def generate_exid(domain)
