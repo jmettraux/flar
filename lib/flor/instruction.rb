@@ -69,7 +69,8 @@ class Flor::Instruction
 
   def sattr(s)
 
-    return s[2..-1] unless s[0, 2] == 'r_'
+    return s if s[1, 1] != '_' || 'sdyr'.index(s[0, 1]) == nil
+    return s[2..-1] unless s[0, 1] == 'r'
 
     ss = s.split('/')
     flags = 0
@@ -83,29 +84,32 @@ class Flor::Instruction
   def xattr(o)
 
     case o
-      when Object then o.inject({}) { |h, (k, v)| h[xattr[k]] = xattr[v]; h }
+      when Hash then o.inject({}) { |h, (k, v)| h[xattr(k)] = xattr(v); h }
       when Array then o.collect { |e| xattr(e) }
       when String then sattr(o)
       else o
     end
   end
 
-  def xattributes; xattr(tree[1]); end
+  def xattributes # expanded attributes
 
-  #def unkeyed_values(from_zero)
-  #
-  #  if from_zero
-  #    (0..attributes.length - 1)
-  #      .inject([]) { |a, i|
-  #        k = "_#{i}"; a << attributes[k] if attributes.has_key?(k); a
-  #      }
-  #  else
-  #    attributes
-  #      .inject([]) { |a, (k, v)|
-  #        a << v if k.match(/\A_\d+\Z/); a
-  #      }
-  #  end
-  #end
+    @xatts ||= xattr(tree[1])
+  end
+
+  def unkeyed_values(from_zero)
+
+    if from_zero
+      (0..xattributes.length - 1)
+        .inject([]) { |a, i|
+          k = "_#{i}"; a << xattributes[k] if xattributes.has_key?(k); a
+        }
+    else
+      xattributes
+        .inject([]) { |a, (k, v)|
+          a << v if k.match(/\A_\d+\Z/); a
+        }
+    end
+  end
 
   def lookup_tree(nid)
 
@@ -240,7 +244,7 @@ class Flor::Instruction
 
     mod, cat, key = key_split(k)
 
-    case cat[0]
+    case cat[0, 1]
       when 'f' then Flor.deep_set(payload, key, v)
       when 'v' then set_var(mod, key, v)
       when 'w' then set_war(key, v)
@@ -286,16 +290,18 @@ class Flor::Instruction
     def lookup(k); @instruction.get_value(k); end
   end
 
-  def expand(s)
+  def expand(s, notkey=true)
 
-    return s if s[0, 1] == '_'
+    return s if s[1, 1] != '_' || 'sdyr'.index(s[1, 0]) == nil
     return s if s[0, 2] == 's_'
 
     s1 = s[2..-1]
     x = Expander.new(self)
-    v = x.expand("$(#{s1})") || x.expand(s1)
+    v = (notkey && x.expand("$(#{s1})")) || x.expand(s1)
 
-    v == s1 ? s : "s_#{v}"
+    return s if v == s1
+    return "s_#{v}" if v.is_a?(String)
+    v
   end
 end
 

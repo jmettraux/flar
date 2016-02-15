@@ -42,7 +42,8 @@ class Flor::Ins::Arith < Flor::Instruction
     m = ms.size == 1 && ms.first
     #
     if m['point'] == 'receive' && m['nid'] == parent
-      payload['ret'] = @node['rets'].reduce(&tree.first.to_sym) || 0
+      operation = tree.first[2..-1].to_sym
+      payload['ret'] = @node['rets'].reduce(&operation) || 0
     end
 
     ms

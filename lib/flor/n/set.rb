@@ -32,6 +32,7 @@ class Flor::Ins::Set < Flor::Instruction
 
     @node['rets'] = []
 
+p tree
     sequence_receive
   end
 
@@ -46,7 +47,7 @@ class Flor::Ins::Set < Flor::Instruction
     if val.is_a?(Array) && uks.size > 1
       splat(uks, val)
     else
-      set_value(uks.first, val)
+      set_value(xattributes['_0'], val)
     end
 
     reply
