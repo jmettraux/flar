@@ -67,44 +67,15 @@ class Flor::Instruction
     @execution['nodes'][node['parent']]
   end
 
-  def sattr(s)
-
-    return s if s[1, 1] != '_' || 'sdyr'.index(s[0, 1]) == nil
-    return s[2..-1] unless s[0, 1] == 'r'
-
-    ss = s.split('/')
-    flags = 0
-    flags |= Regexp::EXTENDED if ss[2].index('x')
-    flags |= Regexp::IGNORECASE if ss[2].index('i')
-    flags |= Regexp::MULTILINE if ss[2].index('m')
-
-    Regexp.new(ss[1], flags)
-  end
-
-  def xattr(o)
-
-    case o
-      when Hash then o.inject({}) { |h, (k, v)| h[xattr(k)] = xattr(v); h }
-      when Array then o.collect { |e| xattr(e) }
-      when String then sattr(o)
-      else o
-    end
-  end
-
-  def xattributes # expanded attributes
-
-    @xatts ||= xattr(tree[1])
-  end
-
   def unkeyed_values(from_zero)
 
     if from_zero
-      (0..xattributes.length - 1)
+      (0..attributes.length - 1)
         .inject([]) { |a, i|
-          k = "_#{i}"; a << xattributes[k] if xattributes.has_key?(k); a
+          k = "_#{i}"; a << attributes[k] if attributes.has_key?(k); a
         }
     else
-      xattributes
+      attributes
         .inject([]) { |a, (k, v)|
           a << v if k.match(/\A_\d+\Z/); a
         }
@@ -244,7 +215,7 @@ class Flor::Instruction
 
     mod, cat, key = key_split(k)
 
-    case cat[0, 1]
+    case cat[0]
       when 'f' then Flor.deep_set(payload, key, v)
       when 'v' then set_var(mod, key, v)
       when 'w' then set_war(key, v)
@@ -290,18 +261,9 @@ class Flor::Instruction
     def lookup(k); @instruction.get_value(k); end
   end
 
-  def expand(s, notkey=true)
+  def expand(s)
 
-    return s if s[1, 1] != '_' || 'sdyr'.index(s[1, 0]) == nil
-    return s if s[0, 2] == 's_'
-
-    s1 = s[2..-1]
-    x = Expander.new(self)
-    v = (notkey && x.expand("$(#{s1})")) || x.expand(s1)
-
-    return s if v == s1
-    return "s_#{v}" if v.is_a?(String)
-    v
+    s.index('$') ? Expander.new(self).expand(s) : s
   end
 end
 

@@ -109,16 +109,14 @@ describe 'Flor instructions' do
       rad = %{
         sequence
           set v.a: 0
-          push l "$(v.a) $(lv.a) $(gv.a)"
+          push l '$(v.a) $(lv.a) $(gv.a)'
           sequence vars: {}
             set v.a: 1, lv.a: 2, gv.a: 3
-            push l "$(v.a) $(lv.a) $(gv.a)"
-          push l "$(v.a) $(lv.a) $(gv.a)"
+            push l '$(v.a) $(lv.a) $(gv.a)'
+          push l '$(v.a) $(lv.a) $(gv.a)'
       }
 
       r = @executor.launch(rad, payload: {})
-puts
-pp r
 
       expect(r['point']).to eq('terminated')
       expect(r['from']).to eq('0')

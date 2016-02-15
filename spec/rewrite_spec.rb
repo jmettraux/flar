@@ -84,9 +84,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('>')
 
         expect(node['tree']).to eq(
-          [ 'y_>', {}, 2, [
-            [ 'y_a', {}, 2, [] ],
-            [ 'y_b', {}, 2, [] ]
+          [ '>', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -103,9 +103,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('>')
 
         expect(node['tree']).to eq(
-          [ 'y_>', {}, 2, [
-            [ 'y_a', {}, 2, [] ],
-            [ 'y_b', {}, 2, [] ]
+          [ '>', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -122,9 +122,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('>')
 
         expect(node['tree']).to eq(
-          [ 'y_>', {}, 2, [
-            [ 'y_a', { '_0' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ '>', {}, 2, [
+            [ 'a', { '_0' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -144,10 +144,10 @@ describe Flor::Executor do
         expect(node['inst']).to eq('or')
 
         expect(node['tree']).to eq(
-          [ 'y_or', {}, 2, [
-            [ 'y_a', {}, 2, [] ],
-            [ 'y_b', {}, 2, [] ],
-            [ 'y_c', {}, 2, [] ]
+          [ 'or', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', {}, 2, [] ],
+            [ 'c', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -164,9 +164,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('or')
 
         expect(node['tree']).to eq(
-          [ 'y_or', {}, 2, [
-            [ 'y_a', {}, 2, [] ],
-            [ 'y_b', { '_0' => 'y_and', '_1' => 'y_c' }, 2, [] ]
+          [ 'or', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', { '_0' => 'and', '_1' => 'c' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -183,9 +183,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('and')
 
         expect(node['tree']).to eq(
-          [ 'y_and', {}, 2, [
-            [ 'y_a', {}, 2, [] ],
-            [ 'y_b', { '_0' => 'y_or', '_1' => 'y_c' }, 2, [] ]
+          [ 'and', {}, 2, [
+            [ 'a', {}, 2, [] ],
+            [ 'b', { '_0' => 'or', '_1' => 'c' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -202,9 +202,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('and')
 
         expect(node['tree']).to eq(
-          [ 'y_and', {}, 2, [
-            [ 'y_a', { '_0' => 'y_or', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', {}, 2, [] ]
+          [ 'and', {}, 2, [
+            [ 'a', { '_0' => 'or', '_1' => 'b' }, 2, [] ],
+            [ 'c', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -221,11 +221,11 @@ describe Flor::Executor do
         expect(node['inst']).to eq('or')
 
         expect(node['tree']).to eq(
-          [ 'y_or', {}, 2, [
-            [ 'y_trace',
-              { '_0' => 'y_a' }, 2, [] ],
-            [ 'y_trace',
-              { '_0' => 'y_b', '_1' => 'y_or', '_2' => 'y_trace', '_3' => 'y_c' }, 2, [] ]
+          [ 'or', {}, 2, [
+            [ 'trace',
+              { '_0' => 'a' }, 2, [] ],
+            [ 'trace',
+              { '_0' => 'b', '_1' => 'or', '_2' => 'trace', '_3' => 'c' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -246,9 +246,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('>')
 
         expect(node['tree']).to eq(
-          [ 's_>', {}, 2, [
-            [ 'y_x', {}, 2, [] ],
-            [ 'y_y', {}, 2, [] ]
+          [ '>', {}, 2, [
+            [ 'x', {}, 2, [] ],
+            [ 'y', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -266,9 +266,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('>')
 
         expect(node['tree']).to eq(
-          [ 's_>', {}, 2, [
-            [ 'y_x', {}, 2, [] ],
-            [ 'y_y', {}, 2, [] ]
+          [ '>', {}, 2, [
+            [ 'x', {}, 2, [] ],
+            [ 'y', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -288,8 +288,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('if')
 
         expect(node['tree']).to eq(
-          [ 'y_if', {}, 2, [
-            [ 'y_a', {}, 2, [] ]
+          [ 'if', {}, 2, [
+            [ 'a', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -306,8 +306,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('unless')
 
         expect(node['tree']).to eq(
-          [ 'y_unless', {}, 2, [
-            [ 'y_a', {}, 2, [] ]
+          [ 'unless', {}, 2, [
+            [ 'a', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -324,8 +324,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('if')
 
         expect(node['tree']).to eq(
-          [ 'y_if', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ]
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -343,9 +343,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('if')
 
         expect(node['tree']).to eq(
-          [ 'y_if', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 3, [] ]
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 3, [] ]
           ], 'sx' ]
         )
       end
@@ -364,10 +364,10 @@ describe Flor::Executor do
         expect(node['inst']).to eq('if')
 
         expect(node['tree']).to eq(
-          [ 'y_if', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', {}, 3, [] ],
-            [ 'y_d', {}, 4, [] ]
+          [ 'if', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', {}, 3, [] ],
+            [ 'd', {}, 4, [] ]
           ], 'sx' ]
         )
       end
@@ -399,8 +399,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('if')
 
         expect(node['tree']).to eq(
-          [ 'y_if', {}, 2, [
-            [ 'y_val', { '_0' => true }, 2, [] ]
+          [ 'if', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -417,8 +417,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('elif')
 
         expect(node['tree']).to eq(
-          [ 'y_elif', {}, 2, [
-            [ 'y_val', { '_0' => true }, 2, [] ]
+          [ 'elif', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -435,8 +435,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('elsif')
 
         expect(node['tree']).to eq(
-          [ 'y_elsif', {}, 2, [
-            [ 'y_val', { '_0' => true }, 2, [] ]
+          [ 'elsif', {}, 2, [
+            [ 'val', { '_0' => true }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -456,9 +456,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('ife')
 
         expect(node['tree']).to eq(
-          [ 'y_ife', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -475,10 +475,10 @@ describe Flor::Executor do
         expect(node['inst']).to eq('ife')
 
         expect(node['tree']).to eq(
-          [ 'y_ife', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ],
-            [ 'y_e', { '_0' => 'y_f' }, 2, [] ]
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ],
+            [ 'e', { '_0' => 'f' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -495,9 +495,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('elsif')
 
         expect(node['tree']).to eq(
-          [ 'y_elsif', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -514,9 +514,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('elsif')
 
         expect(node['tree']).to eq(
-          [ 'y_elsif', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -536,9 +536,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('ife')
 
         expect(node['tree']).to eq(
-          [ 'y_ife', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -557,11 +557,11 @@ describe Flor::Executor do
         expect(node['inst']).to eq('ife')
 
         expect(node['tree']).to eq(
-          [ 'y_ife', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', {}, 2, [
-              [ 'y_e', { '_0' => 'y_f' }, 3, [] ],
-              [ 'y_g', { '_0' => 'y_h' }, 4, [] ]
+          [ 'ife', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', {}, 2, [
+              [ 'e', { '_0' => 'f' }, 3, [] ],
+              [ 'g', { '_0' => 'h' }, 4, [] ]
             ] ]
           ], 'sx' ]
         )
@@ -579,9 +579,9 @@ describe Flor::Executor do
         expect(node['inst']).to eq('unlesse')
 
         expect(node['tree']).to eq(
-          [ 'y_unlesse', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ],
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'unlesse', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ],
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -601,8 +601,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('elsif')
 
         expect(node['tree']).to eq(
-          [ 'y_elsif', {}, 2, [
-            [ 'y_a', { '_0' => 'y_>', '_1' => 'y_b' }, 2, [] ]
+          [ 'elsif', {}, 2, [
+            [ 'a', { '_0' => '>', '_1' => 'b' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -622,8 +622,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('else')
 
         expect(node['tree']).to eq(
-          [ 'y_else', {}, 2, [
-            [ 'y_c', { '_0' => 'y_d' }, 2, [] ]
+          [ 'else', {}, 2, [
+            [ 'c', { '_0' => 'd' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -671,8 +671,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('set')
 
         expect(node['tree']).to eq(
-          [ 'y_set', { '_0' => 'y_k' }, 2, [
-            [ 'y_v', {}, 2, [] ]
+          [ 'set', { '_0' => 'k' }, 2, [
+            [ 'v', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -689,12 +689,12 @@ describe Flor::Executor do
         expect(node['inst']).to eq('sequence')
 
         expect(node['tree']).to eq(
-          [ 'y_sequence', {}, 2, [
-            [ 'y_set', { '_0' => 'y_k0' }, 2, [
-              [ 'y_v0', {}, 2, [] ]
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'k0' }, 2, [
+              [ 'v0', {}, 2, [] ]
             ] ],
-            [ 'y_set', { '_0' => 'y_k1' }, 2, [
-              [ 'y_v1', {}, 2, [] ]
+            [ 'set', { '_0' => 'k1' }, 2, [
+              [ 'v1', {}, 2, [] ]
             ] ]
           ], 'sx' ]
         )
@@ -712,15 +712,15 @@ describe Flor::Executor do
         expect(node['inst']).to eq('sequence')
 
         expect(node['tree']).to eq(
-          [ 'y_sequence', {}, 2, [
-            [ 'y_set', { '_0' => 'y_k0' }, 2, [
-              [ 'y_v0', {}, 2, [] ]
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'k0' }, 2, [
+              [ 'v0', {}, 2, [] ]
             ] ],
-            [ 'y_set', { '_0' => 'y_k1' }, 2, [
-              [ 'y_a', { '_0' => 'y_+', '_1' => 1 }, 2, [] ]
+            [ 'set', { '_0' => 'k1' }, 2, [
+              [ 'a', { '_0' => '+', '_1' => 1 }, 2, [] ]
             ] ],
-            [ 'y_set', { '_0' => 'y_k2' }, 2, [
-              [ 'y_v2', {}, 2, [] ]
+            [ 'set', { '_0' => 'k2' }, 2, [
+              [ 'v2', {}, 2, [] ]
             ] ]
           ], 'sx' ]
         )
@@ -738,8 +738,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('set')
 
         expect(node['tree']).to eq(
-          [ 'y_set', { '_0' => 'y_k' }, 2, [
-            [ 'y_val', { '_0' => 1 }, 2, [] ]
+          [ 'set', { '_0' => 'k' }, 2, [
+            [ 'val', { '_0' => 1 }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -756,8 +756,8 @@ describe Flor::Executor do
         expect(node['inst']).to eq('set')
 
         expect(node['tree']).to eq(
-          [ 'y_set', { '_0' => 'y_k' }, 2, [
-            [ 'y_blue', {}, 2, [] ]
+          [ 'set', { '_0' => 'k' }, 2, [
+            [ 'blue', {}, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -777,11 +777,11 @@ describe Flor::Executor do
         expect(node['inst']).to eq('sequence')
 
         expect(node['tree']).to eq(
-          [ 'y_sequence', {}, 2, [
-            [ 'y_set', { '_0' => 'y_w._0' }, 2, [
-              [ 'y_+', { '_0' => 1, '_1' => 2 }, 2, [] ]
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'w._0' }, 2, [
+              [ '+', { '_0' => 1, '_1' => 2 }, 2, [] ]
             ] ],
-            [ 'y_task', { '_0' => 'y_bob', 'y_count' => 'y_w._0' }, 2, [] ]
+            [ 'task', { '_0' => 'bob', 'count' => '$(w._0)' }, 2, [] ]
           ], 'sx' ]
         )
       end
@@ -798,12 +798,12 @@ describe Flor::Executor do
         expect(node['inst']).to eq('sequence')
 
         expect(node['tree']).to eq(
-          [ 'y_sequence', {}, 2, [
-            [ 'y_set', { '_0' => 'y_w._0' }, 2, [
-              [ [ 'y_val', { '_0' => 1 }, 2, [] ],
-                { '_0' => 'y_+', '_1' => 2 }, 2, [] ]
+          [ 'sequence', {}, 2, [
+            [ 'set', { '_0' => 'w._0' }, 2, [
+              [ [ 'val', { '_0' => 1 }, 2, [] ],
+                { '_0' => '+', '_1' => 2 }, 2, [] ]
             ] ],
-            [ 'y_sub', { '_0' => 'y_w._0' }, 2, [] ]
+            [ 'sub', { '_0' => '$(w._0)' }, 2, [] ]
           ], 'sx' ]
         )
       end

@@ -40,8 +40,6 @@ describe 'Flor executions' do
           set v.a: { x: 0, y: 1 }
           push l $(f.stuff.msg)
           push l $(v.a)
-          #push l f.stuff.msg
-          #push l v.a
       }
 
       r = @executor.launch(

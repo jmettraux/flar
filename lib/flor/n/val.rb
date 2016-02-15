@@ -30,7 +30,7 @@ class Flor::Ins::Val < Flor::Instruction
 
   def execute
 
-    payload['ret'] = xattributes['_0']
+    payload['ret'] = attributes['_0']
 
     reply
   end

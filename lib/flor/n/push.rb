@@ -30,13 +30,13 @@ class Flor::Ins::Push < Flor::Instruction
 
   def execute
 
-    field = xattributes['_0']
+    field = attributes['_0']
     array = (payload[field] ||= [])
     asize = array.size
 
     return error_reply("target value is not an array") unless array.is_a?(Array)
 
-    xattributes.each do |k, v|
+    attributes.each do |k, v|
       next if k == '_0'
       array.push(v)
       payload['ret'] = v

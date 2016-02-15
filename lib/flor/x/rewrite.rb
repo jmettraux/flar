@@ -81,23 +81,18 @@ class Flor::Executor
 
   def rewrite_prefix(op, node, message, tree)
 
-    return tree unless tree[0][2..-1] == op
+    return tree unless tree[0] == op
     return tree if tree[3].length > 0 # there are already children
 
     cn = tree[1]
       .collect { |k, v| l_to_tree([ [ nil, v ] ], tree[2], node, message) }
 
-    [ tree[0], {}, tree[2], cn, *tree[4] ]
+    [ op, {}, tree[2], cn, *tree[4] ]
   end
 
   def rewrite_infix(op, node, message, tree)
 
-    top =
-      tree[1].find { |k, v|
-        v.is_a?(String) && v[2..-1] == op && k.match(/\A_\d+\z/)
-      }
-
-    return tree unless top
+    return tree unless tree[1].find { |k, v| v == op && k.match(/\A_\d+\z/) }
 
     cn = []
     l = [ [ nil, tree[0] ] ]
@@ -106,7 +101,7 @@ class Flor::Executor
 
       v = tree[1][k]
 
-      if k && ! (v[2..-1] == op && k.match(/\A_\d+\z/))
+      if k && ! (v == op &&  k.match(/\A_\d+\z/))
         l << [ k, v ]; next
       end
 
@@ -114,7 +109,7 @@ class Flor::Executor
       l = []
     end
 
-    [ top[1], {}, tree[2], cn, *tree[4] ]
+    [ op, {}, tree[2], cn, *tree[4] ]
   end
 
   def rewrite_pinfix(op, node, message, tree)
@@ -127,11 +122,8 @@ class Flor::Executor
 
   def rewrite_else_if(node, message, tree)
 
-    t0 = tree[0].is_a?(String) && tree[0][2..-1]
-    return tree unless t0 == 'else'
-
-    t1_0 = tree[1]['_0'].is_a?(String) && tree[1]['_0'][2..-1]
-    return tree unless t1_0 == 'if'
+    return tree unless tree[0] == 'else'
+    return tree unless tree[1]['_0'] == 'if'
 
     as =
       tree[1].inject([ {}, -1 ]) do |(h, i), (k, v)|
@@ -149,7 +141,7 @@ class Flor::Executor
         [ h, i ]
       end.first
 
-    [ 'y_elsif', as, tree[2], tree[3], *tree[4] ]
+    [ 'elsif', as, tree[2], tree[3], *tree[4] ]
   end
 
   def rewrite_post_if(node, message, tree)
@@ -161,9 +153,9 @@ class Flor::Executor
     tree[1].each do |k, v|
       if postif
         postif << [ k, v ]
-      elsif v.is_a?(String) && (v[2..-1] == 'if' || v[2..-1] == 'unless')
+      elsif v == 'if' || v == 'unless'
         postif = []
-        foe = v[2..-1]
+        foe = v
       else
         preif << [ k, v ]
       end
@@ -176,18 +168,12 @@ class Flor::Executor
     pret = l_to_tree([ [ nil, tree[0] ]  ] + preif, tree[2], node, message)
     pret[3] = tree[3]
 
-    [
-      foe == 'if' ? 'y_ife' : 'y_unlesse',
-      {},
-      tree[2],
-      [ postt, pret ],
-      *tree[4]
-    ]
+    [ foe == 'if' ? 'ife' : 'unlesse', {}, tree[2], [ postt, pret ], *tree[4] ]
   end
 
   def rewrite_head_if(node, message, tree)
 
-    return tree unless %w[ if elif elsif unless else ].include?(tree[0][2..-1])
+    return tree unless %w[ if elif elsif unless else ].include?(tree[0])
 
     cn = Flor.dup(tree[3])
 
@@ -195,7 +181,7 @@ class Flor::Executor
     l = cnd
 
     tree[1].each do |k, v|
-      case v.is_a?(String) && v[2..-1]
+      case v
         when 'then' then l = thn
         when 'else' then l = els
         else l << [ k, v ]
@@ -214,12 +200,12 @@ class Flor::Executor
 
     inst =
       if thn.any?
-        if tree[0][2, 1] == 'u'
-          'y_unlesse'
-        elsif tree[0][2, 1] == 'e'
-          'y_elsif'
+        if tree[0][0, 1] == 'u'
+          'unlesse'
+        elsif tree[0][0, 1] == 'e'
+          'elsif'
         else
-          'y_ife'
+          'ife'
         end
       else
         tree[0]
@@ -230,7 +216,7 @@ class Flor::Executor
 
   def rewrite_set(node, message, tree)
 
-    return tree if tree[0] != 'y_set'
+    return tree if tree[0] != 'set'
     return tree if tree[3].any? # one or more children
 
     return tree if tree[1].empty? # no attributes
@@ -241,15 +227,11 @@ class Flor::Executor
     sets =
       tree[1].inject([]) do |a, (k, v)|
         next a if k.match(/\A_\d+\z/)
-        a << [
-          'y_set',
-          { '_0' => k },
-          ln,
-          [ v_to_tree([ k, v ], ln, node, message) ] ]
+        a << [ 'set', { '_0' => k }, ln, [ v_to_tree([ k, v ], ln, node, message) ] ]
         a
       end
 
-    r = sets.size == 1 ? sets.first : [ 'y_sequence', {}, ln, sets ]
+    r = sets.size == 1 ? sets.first : [ 'sequence', {}, ln, sets ]
     r << tree[4] if tree[4]
 
     r
@@ -267,8 +249,8 @@ class Flor::Executor
     j = 0
     tree[1].each do |k, v|
       if is_tree?(v)
-        schildren << [ 'y_set', { '_0' => "y_w._#{j}" }, ln, [ v ] ]
-        catts[k] = "y_w._#{j}"
+        schildren << [ 'set', { '_0' => "w._#{j}" }, ln, [ v ] ]
+        catts[k] = "$(w._#{j})"
         j = j + 1
       else
         catts[k] = v
@@ -277,7 +259,7 @@ class Flor::Executor
 
     schildren << core
 
-    [ 'y_sequence', {}, ln, schildren, *tree[4] ]
+    [ 'sequence', {}, ln, schildren, *tree[4] ]
   end
 
   def rewrite(node, message, tree)
@@ -323,7 +305,7 @@ class Flor::Executor
 
     return val if is_tree?(val)
     return [ val, {}, lnumber, [] ] if val.is_a?(String)
-    [ 'y_val', { '_0' => val }, lnumber, [] ]
+    [ 'val', { '_0' => val }, lnumber, [] ]
   end
 
   def l_to_tree(lst, lnumber, node, message)

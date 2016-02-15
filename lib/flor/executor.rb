@@ -91,16 +91,16 @@ module Flor
       inst.execute
     end
 
-    def expand(o, expander, notkey=true)
+    def expand(o, expander)
 
       case o
         when Array
           o.collect { |e| expand(e, expander) }
         when Hash
           o.inject({}) { |h, (k, v)|
-            h[expand(k, expander, false)] = expand(v, expander); h }
+            h[expand(k, expander)] = expand(v, expander); h }
         when String
-          expander.expand(o, notkey)
+          expander.expand(o)
         else
           o
       end
@@ -110,18 +110,16 @@ module Flor
 
       tree0 = message['tree']
 
-p tree0 if tree0[0] == 'y_push'
       expander = Flor::Instruction.new(@execution, node, message, true)
 
       tree1 = [ *expand(tree0[0, 2], expander), *tree0[2..-1] ]
       tree1 = rewrite(node, message, tree1)
-p tree1 if tree0[0] == 'y_push'
 
       # TODO beware always reduplicating the tree children
       # TODO should be OK, the rewrite_ methods return a new tree as soon
       #      as they rewrite
 
-      node['inst'] = tree1.first[2..-1]
+      node['inst'] = tree1.first
       node['tree'] = tree1 if node['nid'] == '0' || tree1 != tree0
     end
 
@@ -149,19 +147,15 @@ p tree1 if tree0[0] == 'y_push'
 
       return unless @options[:debug] || (ENV['FLOR_DEBUG'] || '').match(/log/)
 
-      colo = "[1;30m"
-
       pt = m['point'][0, 3]
       ni = m['nid'] ? " #{m['nid']}" : ''
       fr = m['from'] ? " from #{m['from']}" : ''
-
-      t = m['tree'];
-      t0 = t ? " [[1;33m#{t[0][2..-1]}#{colo}" : ''
-      t = t ? " #{t[1..-2].inspect[1..-2]}]" : ''
-
+      t = m['tree'] ? ' ' + m['tree'][0..-2].inspect : ''
       ind = '  ' * ni.split('_').size
 
-      puts "#{colo}#{ind}#{pt}#{ni}#{t0}#{t}#{fr} [0;0m" # dark gray
+      #puts "[1;33m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # yellow
+      #puts "[0;37m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # light gray
+      puts "[1;30m#{ind}#{pt}#{ni}#{t}#{fr} [0;0m" # dark gray
     end
 
     def generate_exid(domain)
