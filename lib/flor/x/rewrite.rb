@@ -38,6 +38,9 @@ class Flor::Executor
     o[3].all? { |e| is_tree?(e) } # overkill?
   end
 
+  # NOTA BENE
+  # this should be avoided, it should be done at the parser level...
+  #
 #static int rewrite_as_call_invoke_or_val(
 #  fdja_value *node, fdja_value *msg, fdja_value *tree)
 #{
